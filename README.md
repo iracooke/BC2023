@@ -7,9 +7,9 @@ This subject includes five bioinformatics tutorials designed to introduce some o
 
 All of the tutorials take the form of an interactive notebook which you can access using a web browser.  These notebooks include all of the instructions for completing each tutorial and include space for you to add your answers. For tutorials 1-4, self-assessment exercises are provided to help you track your progress.  The final notebook (tutorial 5) must be submitted for assessment.
 
-Most programs for analysis of large biological sequence datasets use a text based interface called the *command line*.  We will learn one of the most commonly used command line environments called *bash* [Bourne Again Shell](https://en.wikipedia.org/wiki/Bash_(Unix_shell)).  The best way to learn bash is to play around and type commands.  To help you do this we've built an interactive website that guides you through the most useful commands and gives you access to a bash shell where you can experiment with them.  This website forms the *textbook* for these tutorials.  It is accessible at [https://bc2023.bioinformatics.guide](https://bc2023.bioinformatics.guide)
+Most programs for analysis of large biological sequence datasets use a text based interface called the *command line*.  We will learn one of the most commonly used command line environments called *bash* [Bourne Again Shell](https://en.wikipedia.org/wiki/Bash_(Unix_shell)).  The best way to learn bash is to play around and type commands.  To help you do this we've built an interactive website that guides you through the most useful commands and gives you access to a bash shell where you can experiment with them.  This website forms the *textbook* for these tutorials.  It is accessible at [http://bc2023.bioinformatics.guide](https://bc2023.bioinformatics.guide)
 
-
+Prior to each bioinformatics workshop you should work through the relevant sections of [the guide](https://bc2023.bioinformatics.guide) (see table below)
 
 Workshop |        Theme         | Required Preparation
 -------- | -------------------- | --------------------
