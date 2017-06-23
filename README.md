@@ -1,77 +1,20 @@
-# Command-line bootcamp
 
-Forked from the original with the intention of adding content
+# Bioinformatics Tutorial Exercises
 
-Learn the unix command-line by using it in your browser.
+Developed by Ira Cooke for BC2023, James Cook University
 
-### contributors
+This subject includes five bioinformatics tutorials designed to introduce some of the core skills required for manipulating large biological sequence datasets. The tutorials are based around the *central dogma* of biology and will demonstrate how to translate a large number of RNA sequences into their corresponding proteins.
 
-- [@jessicamizzi](https://github.com/jessicamizzi)
+All of the tutorials take the form of an interactive notebook which you can access using a web browser.  These notebooks include all of the instructions for completing each tutorial and include space for you to add your answers. For tutorials 1-4, self-assessment exercises are provided to help you track your progress.  The final notebook (tutorial 5) must be submitted for assessment.
 
-### build and deploy the frontend
+Most programs for analysis of large biological sequence datasets use a text based interface called the *command line*.  We will learn one of the most commonly used command line environments called *bash* [Bourne Again Shell](https://en.wikipedia.org/wiki/Bash_(Unix_shell)).  The best way to learn bash is to play around and type commands.  To help you do this we've built an interactive website that guides you through the most useful commands and gives you access to a bash shell where you can experiment with them.  This website forms the *textbook* for these tutorials.  It is accessible at [http://bc2023.bioinformatics.guide](https://bc2023.bioinformatics.guide)
 
-You'll need node.js
+Prior to each bioinformatics workshop you should work through the relevant sections of [the guide](https://bc2023.bioinformatics.guide) (see table below)
 
-```bash
-# install and set up nvm and node
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
-source ~/.bashrc
-
-# some dependencies don't work with node 1+, so stick with 0.12
-nvm install 0.12
-nvm use 0.12
-```
-
-Once you've got node installed, grab this repo and let node install the dependencies:
-
-```bash
-git clone https://github.com/iracooke/command_line_bootcamp.git
-cd command_line_bootcamp
-npm install
-```
-
-Make your changes (if any) and then deploy:
-
-```bash
-npm run deploy
-```
-
-### setup and run the docker server backend
-
-Instructions for running on a Nectar Ubuntu 16.04 image
-
-Login and switch to the root account
-
-
-```bash
-# need some basics
-apt-get update
-apt-get install -y build-essential g++ curl git
-
-# install and set up nvm and node
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
-source ~/.bashrc
-
-# some dependencies don't work with node 1+, so stick with 0.12
-nvm install 0.12
-nvm use 0.12
-
-# major dependencies
-npm install --global iracooke/docker-browser-server
-
-# setup docker
-# You first need to install docker according to the instructions on dockerproject.org
-
-git clone https://github.com/iracooke/bc2023.git
-cd BC2023
-docker build -t "bc2023" .
-docker-browser-server bc2023 -p 8080
-```
-
-### cleaning up long-running containers
-
-Sometimes people leave their browser windows open for a really long time. If you don't want to fund the docker container running for that time, you can clean up long-running containers:
-
-```bash
-docker stop $(docker ps | grep hours | cut -d ' ' -f1 | paste - - - - )
-```
+Workshop |        Theme         | Required Preparation
+-------- | -------------------- | --------------------
+Week 2| Introduction to Jupyter notebook | Sections 1-5
+Week 4| The Bash shell | Sections 6-10
+Week 6| Data in FASTA format | Sections 11-12
+Week 8| Awk and Bioawk | Sections 13-15
+Week 9| Revision | Sections 1-15
