@@ -1,1 +1,90 @@
-Hello top level
+<h1>Command-line bootcamp</h1>
+
+<p>Forked from the original with the intention of adding content</p>
+
+<p>Learn the unix command-line by using it in your browser.</p>
+
+<h3>contributors</h3>
+
+<ul><li><a href="https://github.com/jessicamizzi">@jessicamizzi</a></li></ul>
+
+<h3>build and deploy the frontend</h3>
+
+<p>You&#39;ll need node.js</p>
+
+<p><code></code>`bash</p>
+
+<h1>install and set up nvm and node</h1>
+
+<p>curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+source ~/.bashrc</p>
+
+<h1>some dependencies don&#39;t work with node 1+, so stick with 0.12</h1>
+
+<p>nvm install 0.12
+nvm use 0.12
+<code></code>`</p>
+
+<p>Once you&#39;ve got node installed, grab this repo and let node install the dependencies:</p>
+
+<p><code>bash
+git clone https://github.com/iracooke/command_line_bootcamp.git
+cd command_line_bootcamp
+npm install
+</code></p>
+
+<p>Make your changes (if any) and then deploy:</p>
+
+<p><code>bash
+npm run deploy
+</code></p>
+
+<h3>setup and run the docker server backend</h3>
+
+<p>Instructions for running on digitalocean:</p>
+
+<p>Create a new instance of the Ubuntu+docker image.</p>
+
+<p>then ssh in and...</p>
+
+<p><code></code>`bash</p>
+
+<h1>keep it running</h1>
+
+<p>tmux</p>
+
+<h1>need some basics</h1>
+
+<p>apt-get update
+apt-get install -y build-essential g++</p>
+
+<h1>install and set up nvm and node</h1>
+
+<p>curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+source ~/.bashrc</p>
+
+<h1>some dependencies don&#39;t work with node 1+, so stick with 0.12</h1>
+
+<p>nvm install 0.12
+nvm use 0.12</p>
+
+<h1>major dependencies</h1>
+
+<p>npm install --global iracooke/docker-browser-server</p>
+
+<h1>setup docker</h1>
+
+<p>docker pull ubuntu
+git clone https://github.com/iracooke/command<em>line</em>bootcamp.git
+cd command<em>line</em>bootcamp
+docker build -t &quot;command<em>line</em>bootcamp&quot; .
+docker-browser-server command<em>line</em>bootcamp -p 8080
+<code></code>`</p>
+
+<h3>cleaning up long-running containers</h3>
+
+<p>Sometimes people leave their browser windows open for a really long time. If you don&#39;t want to fund the docker container running for that time, you can clean up long-running containers:</p>
+
+<p><code>bash
+docker stop $(docker ps | grep hours | cut -d &#39; &#39; -f1 | paste - - - - )
+</code></p>
