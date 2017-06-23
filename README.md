@@ -38,19 +38,15 @@ npm run deploy
 
 ### setup and run the docker server backend
 
-Instructions for running on digitalocean:
+Instructions for running on a Nectar Ubuntu 16.04 image
 
-Create a new instance of the Ubuntu+docker image.
+Login and switch to the root account
 
-then ssh in and...
 
 ```bash
-# keep it running
-tmux
-
 # need some basics
 apt-get update
-apt-get install -y build-essential g++
+apt-get install -y build-essential g++ curl git
 
 # install and set up nvm and node
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
@@ -64,11 +60,12 @@ nvm use 0.12
 npm install --global iracooke/docker-browser-server
 
 # setup docker
-docker pull ubuntu
-git clone https://github.com/iracooke/command_line_bootcamp.git
-cd command_line_bootcamp
-docker build -t "command_line_bootcamp" .
-docker-browser-server command_line_bootcamp -p 8080
+# You first need to install docker according to the instructions on dockerproject.org
+
+git clone https://github.com/iracooke/bc2023.git
+cd BC2023
+docker build -t "bc2023" .
+docker-browser-server bc2023 -p 8080
 ```
 
 ### cleaning up long-running containers
