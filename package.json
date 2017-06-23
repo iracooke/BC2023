@@ -1,0 +1,20 @@
+{
+  "name": "bc2023",
+  "version": "1.0.1",
+  "description": "Working with sequence data on the command line",
+  "main": "index.js",
+  "scripts": {
+    "render": "submarine chapters_md workshop --template=templates/guide.html"
+  },
+  "author": "Ira Cooke",
+  "license": "MIT",
+  "dependencies": {
+    "adventure-time": "iracooke/adventure-time",
+    "submarine": "0.2.4"
+  },
+  "devDependencies": {
+    "beefy": "^2.1.1",
+    "browserify": "^6.1.0",
+    "npm-watch": "0.0.0"
+  }
+}
