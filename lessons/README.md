@@ -22,7 +22,7 @@ Once you've got node installed, grab this repo and let node install the dependen
 
 ```bash
 git clone https://github.com/iracooke/bc2023.git
-cd bc2023/preparation
+cd bc2023/lessons
 npm install
 ```
 
@@ -58,7 +58,7 @@ npm install --global iracooke/docker-browser-server
 # You first need to install docker according to the instructions on dockerproject.org
 
 git clone https://github.com/iracooke/bc2023.git
-cd BC2023/preparation
+cd BC2023/lessons
 docker build -t "bc2023" .
 docker-browser-server bc2023 -p 8080
 ```
