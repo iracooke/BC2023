@@ -19,7 +19,7 @@ Week 6| Data in FASTA format | Sections 11-12
 Week 8| Awk and Bioawk | Sections 13-15
 Week 9| Revision | Sections 1-15
 
-Each workshops will have an accompanying `assignment`.  This is an online tutorial and set of exercises. They are designed to take approximately 1 hour so you should be able to have them largely complete at the end of each tutorial session. 
+Each workshop will have an accompanying `assignment`.  This is an online tutorial and set of exercises. They are designed to take approximately 1 hour so you should be able to have them largely complete at the end of each tutorial session. 
 
 To access the assignments;
 
