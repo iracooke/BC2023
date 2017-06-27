@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <title>Submarine</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+</head>
+<body>
+  <div class="wrapper">
+
+      <section class="content">
+        <p><a href="index.html">table of contents</a></p>
+      <h2 id="09-making-the-ls-command-more-useful">09: Making the <code>ls</code> command more useful</h2>
+<p>Like most Unix commands, <code>ls</code> supports <em>command-line options</em> which let you alter its behavior and functionality. Command-line options are - as the name suggests - optional arguments that are placed after the command name. They often take the form of single letters (following a dash). </p>
+<p>From your home directory type the <code>ls</code> command again, but this time using the <code>l</code> option:</p>
+<pre><code class="lang-bash">learner@:~$ ls -l
+total 8                                                                           
+drwxr-xr-x 2 learner learner 4096 Jun 23 04:35 a_directory                        
+drwxr-xr-x 2 learner learner 4096 Jun 23 04:35 another_directory
+</code></pre>
+<p>Compare this to what happens without the <code>l</code> option.</p>
+<pre><code class="lang-bash">learner@:~$ ls
+a_directory  another_directory
+</code></pre>
+<p>The <code>l</code> option stands for <em>long</em> which tells <code>ls</code> to produce long form output. In this mode it provides much more information for each file and directory (including file ownership and modification times). The &#39;d&#39; at the start of each line indicates that these are directories. There are many, many different options for the <code>ls</code> command. Try out the following (against any directory of your choice) to see how the output changes.</p>
+<pre><code class="lang-bash">ls -l
+ls -R
+ls -l -t -r
+ls -lh
+</code></pre>
+<p>Note that the last example combine multiple options but only use one dash. This is a very common way of specifying multiple command-line options. You may be wondering what some of these options are doing. It&#39;s time to learn about Unix documentation...</p>
+
+        <div class="navlinks">
+          <a class="nextp button" href="10_man_pages.html">OK, next! &raquo;</a>
+            <a class="lastp navlink" href="08_absolute_and_relative.html">&laquo; back</a>
+        </div>
+    </section>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+  <script>
+    function neaten(str) {
+      var pieces = str.split('_');
+      var s = pieces[1];
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      pieces[1] = s;
+      return pieces.join(' ');
+    }
+    $('.toc-list li a').text(function() {
+      return neaten($(this).text());
+    });
+  </script>
+</body>
+</html>

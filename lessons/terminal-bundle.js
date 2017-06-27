@@ -3594,21 +3594,21 @@ module.exports = split
 
 },{"string_decoder":114,"through2":45}],28:[function(require,module,exports){
 arguments[4][9][0].apply(exports,arguments)
-},{"./_stream_readable":30,"./_stream_writable":32,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js":9,"core-util-is":36,"inherits":37,"process-nextick-args":39}],29:[function(require,module,exports){
+},{"./_stream_readable":30,"./_stream_writable":32,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js":9,"core-util-is":36,"inherits":37,"process-nextick-args":39}],29:[function(require,module,exports){
 arguments[4][10][0].apply(exports,arguments)
-},{"./_stream_transform":31,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_passthrough.js":10,"core-util-is":36,"inherits":37}],30:[function(require,module,exports){
+},{"./_stream_transform":31,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_passthrough.js":10,"core-util-is":36,"inherits":37}],30:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"./_stream_duplex":28,"./internal/streams/BufferList":33,"./internal/streams/destroy":34,"./internal/streams/stream":35,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js":11,"_process":97,"core-util-is":36,"events":92,"inherits":37,"isarray":38,"process-nextick-args":39,"safe-buffer":40,"string_decoder/":41,"util":87}],31:[function(require,module,exports){
+},{"./_stream_duplex":28,"./internal/streams/BufferList":33,"./internal/streams/destroy":34,"./internal/streams/stream":35,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js":11,"_process":97,"core-util-is":36,"events":92,"inherits":37,"isarray":38,"process-nextick-args":39,"safe-buffer":40,"string_decoder/":41,"util":87}],31:[function(require,module,exports){
 arguments[4][12][0].apply(exports,arguments)
-},{"./_stream_duplex":28,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js":12,"core-util-is":36,"inherits":37}],32:[function(require,module,exports){
+},{"./_stream_duplex":28,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js":12,"core-util-is":36,"inherits":37}],32:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
-},{"./_stream_duplex":28,"./internal/streams/destroy":34,"./internal/streams/stream":35,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js":13,"_process":97,"core-util-is":36,"inherits":37,"process-nextick-args":39,"safe-buffer":40,"util-deprecate":42}],33:[function(require,module,exports){
+},{"./_stream_duplex":28,"./internal/streams/destroy":34,"./internal/streams/stream":35,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js":13,"_process":97,"core-util-is":36,"inherits":37,"process-nextick-args":39,"safe-buffer":40,"util-deprecate":42}],33:[function(require,module,exports){
 module.exports=require(14)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/BufferList.js":14,"safe-buffer":40}],34:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/BufferList.js":14,"safe-buffer":40}],34:[function(require,module,exports){
 module.exports=require(15)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js":15,"process-nextick-args":39}],35:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js":15,"process-nextick-args":39}],35:[function(require,module,exports){
 module.exports=require(16)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js":16,"events":92}],36:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js":16,"events":92}],36:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3721,19 +3721,19 @@ function objectToString(o) {
 }).call(this,{"isBuffer":require("../../../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
 },{"../../../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":94}],37:[function(require,module,exports){
 module.exports=require(8)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],38:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],38:[function(require,module,exports){
 module.exports=require(18)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/isarray/index.js":18}],39:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/isarray/index.js":18}],39:[function(require,module,exports){
 module.exports=require(19)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/process-nextick-args/index.js":19,"_process":97}],40:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/process-nextick-args/index.js":19,"_process":97}],40:[function(require,module,exports){
 module.exports=require(20)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/safe-buffer/index.js":20,"buffer":88}],41:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/safe-buffer/index.js":20,"buffer":88}],41:[function(require,module,exports){
 module.exports=require(21)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/string_decoder/lib/string_decoder.js":21,"safe-buffer":40}],42:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/string_decoder/lib/string_decoder.js":21,"safe-buffer":40}],42:[function(require,module,exports){
 module.exports=require(22)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/util-deprecate/browser.js":22}],43:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/util-deprecate/browser.js":22}],43:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
-},{"./lib/_stream_duplex.js":28,"./lib/_stream_passthrough.js":29,"./lib/_stream_readable.js":30,"./lib/_stream_transform.js":31,"./lib/_stream_writable.js":32,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/readable-browser.js":23}],44:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":28,"./lib/_stream_passthrough.js":29,"./lib/_stream_readable.js":30,"./lib/_stream_transform.js":31,"./lib/_stream_writable.js":32,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/readable-browser.js":23}],44:[function(require,module,exports){
 module.exports = require('./readable').Transform
 
 },{"./readable":43}],45:[function(require,module,exports){
@@ -4367,7 +4367,7 @@ Terminal.tangoColors = [
   '#729fcf',
   '#ad7fa8',
   '#34e2e2',
-  '#eeeeec'
+  '#333333'
 ];
 
 Terminal.xtermColors = [
@@ -9845,47 +9845,47 @@ if (typeof module !== 'undefined') {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],52:[function(require,module,exports){
 module.exports=require(4)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/index.js":4,"_process":97,"buffer":88,"end-of-stream":53,"inherits":72,"readable-stream":70,"stream-shift":71}],53:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/index.js":4,"_process":97,"buffer":88,"end-of-stream":53,"inherits":72,"readable-stream":70,"stream-shift":71}],53:[function(require,module,exports){
 module.exports=require(5)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/index.js":5,"once":55}],54:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/index.js":5,"once":55}],54:[function(require,module,exports){
 module.exports=require(6)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/node_modules/once/node_modules/wrappy/wrappy.js":6}],55:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/node_modules/once/node_modules/wrappy/wrappy.js":6}],55:[function(require,module,exports){
 module.exports=require(7)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/node_modules/once/once.js":7,"wrappy":54}],56:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/node_modules/once/once.js":7,"wrappy":54}],56:[function(require,module,exports){
 module.exports=require(9)
-},{"./_stream_readable":58,"./_stream_writable":60,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js":9,"core-util-is":64,"inherits":72,"process-nextick-args":66}],57:[function(require,module,exports){
+},{"./_stream_readable":58,"./_stream_writable":60,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js":9,"core-util-is":64,"inherits":72,"process-nextick-args":66}],57:[function(require,module,exports){
 module.exports=require(10)
-},{"./_stream_transform":59,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_passthrough.js":10,"core-util-is":64,"inherits":72}],58:[function(require,module,exports){
+},{"./_stream_transform":59,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_passthrough.js":10,"core-util-is":64,"inherits":72}],58:[function(require,module,exports){
 module.exports=require(11)
-},{"./_stream_duplex":56,"./internal/streams/BufferList":61,"./internal/streams/destroy":62,"./internal/streams/stream":63,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js":11,"_process":97,"core-util-is":64,"events":92,"inherits":72,"isarray":65,"process-nextick-args":66,"safe-buffer":67,"string_decoder/":68,"util":87}],59:[function(require,module,exports){
+},{"./_stream_duplex":56,"./internal/streams/BufferList":61,"./internal/streams/destroy":62,"./internal/streams/stream":63,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js":11,"_process":97,"core-util-is":64,"events":92,"inherits":72,"isarray":65,"process-nextick-args":66,"safe-buffer":67,"string_decoder/":68,"util":87}],59:[function(require,module,exports){
 module.exports=require(12)
-},{"./_stream_duplex":56,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js":12,"core-util-is":64,"inherits":72}],60:[function(require,module,exports){
+},{"./_stream_duplex":56,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js":12,"core-util-is":64,"inherits":72}],60:[function(require,module,exports){
 module.exports=require(13)
-},{"./_stream_duplex":56,"./internal/streams/destroy":62,"./internal/streams/stream":63,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js":13,"_process":97,"core-util-is":64,"inherits":72,"process-nextick-args":66,"safe-buffer":67,"util-deprecate":69}],61:[function(require,module,exports){
+},{"./_stream_duplex":56,"./internal/streams/destroy":62,"./internal/streams/stream":63,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js":13,"_process":97,"core-util-is":64,"inherits":72,"process-nextick-args":66,"safe-buffer":67,"util-deprecate":69}],61:[function(require,module,exports){
 module.exports=require(14)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/BufferList.js":14,"safe-buffer":67}],62:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/BufferList.js":14,"safe-buffer":67}],62:[function(require,module,exports){
 module.exports=require(15)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js":15,"process-nextick-args":66}],63:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js":15,"process-nextick-args":66}],63:[function(require,module,exports){
 module.exports=require(16)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js":16,"events":92}],64:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js":16,"events":92}],64:[function(require,module,exports){
 module.exports=require(17)
-},{"../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":94,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/core-util-is/lib/util.js":17}],65:[function(require,module,exports){
+},{"../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":94,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/core-util-is/lib/util.js":17}],65:[function(require,module,exports){
 module.exports=require(18)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/isarray/index.js":18}],66:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/isarray/index.js":18}],66:[function(require,module,exports){
 module.exports=require(19)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/process-nextick-args/index.js":19,"_process":97}],67:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/process-nextick-args/index.js":19,"_process":97}],67:[function(require,module,exports){
 module.exports=require(20)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/safe-buffer/index.js":20,"buffer":88}],68:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/safe-buffer/index.js":20,"buffer":88}],68:[function(require,module,exports){
 module.exports=require(21)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/string_decoder/lib/string_decoder.js":21,"safe-buffer":67}],69:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/string_decoder/lib/string_decoder.js":21,"safe-buffer":67}],69:[function(require,module,exports){
 module.exports=require(22)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/util-deprecate/browser.js":22}],70:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/util-deprecate/browser.js":22}],70:[function(require,module,exports){
 module.exports=require(23)
-},{"./lib/_stream_duplex.js":56,"./lib/_stream_passthrough.js":57,"./lib/_stream_readable.js":58,"./lib/_stream_transform.js":59,"./lib/_stream_writable.js":60,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/readable-browser.js":23}],71:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":56,"./lib/_stream_passthrough.js":57,"./lib/_stream_readable.js":58,"./lib/_stream_transform.js":59,"./lib/_stream_writable.js":60,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/readable-browser.js":23}],71:[function(require,module,exports){
 module.exports=require(24)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/stream-shift/index.js":24}],72:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/stream-shift/index.js":24}],72:[function(require,module,exports){
 module.exports=require(8)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],73:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],73:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -11568,7 +11568,7 @@ function endWritable(stream, state, cb) {
 }).call(this,require('_process'))
 },{"./_stream_duplex":73,"_process":97,"buffer":88,"core-util-is":77,"inherits":72,"stream":113}],77:[function(require,module,exports){
 module.exports=require(17)
-},{"../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":94,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/core-util-is/lib/util.js":17}],78:[function(require,module,exports){
+},{"../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":94,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/core-util-is/lib/util.js":17}],78:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
@@ -11801,7 +11801,7 @@ module.exports = require("./lib/_stream_transform.js")
 
 },{"./lib/_stream_transform.js":75}],81:[function(require,module,exports){
 arguments[4][45][0].apply(exports,arguments)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/ndjson/node_modules/through2/through2.js":45,"_process":97,"readable-stream/transform":80,"util":118,"xtend":83}],82:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/ndjson/node_modules/through2/through2.js":45,"_process":97,"readable-stream/transform":80,"util":118,"xtend":83}],82:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11848,7 +11848,7 @@ if (WebSocket) ws.prototype = WebSocket.prototype;
 
 },{}],83:[function(require,module,exports){
 module.exports=require(46)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/xtend/immutable.js":46}],84:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/xtend/immutable.js":46}],84:[function(require,module,exports){
 (function (process,Buffer){
 var through = require('through2')
 var duplexify = require('duplexify')
@@ -11991,7 +11991,7 @@ module.exports = function(parentDiv) {
 
 },{}],87:[function(require,module,exports){
 module.exports=require(86)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/browserify/lib/_empty.js":86}],88:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/browserify/lib/_empty.js":86}],88:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -13593,7 +13593,7 @@ function isUndefined(arg) {
 
 },{}],93:[function(require,module,exports){
 module.exports=require(8)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],94:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],94:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -13618,7 +13618,7 @@ function isSlowBuffer (obj) {
 
 },{}],95:[function(require,module,exports){
 module.exports=require(78)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/node_modules/isarray/index.js":78}],96:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/node_modules/isarray/index.js":78}],96:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -14448,7 +14448,7 @@ module.exports = require("./lib/_stream_duplex.js")
 
 },{"./lib/_stream_duplex.js":103}],103:[function(require,module,exports){
 arguments[4][73][0].apply(exports,arguments)
-},{"./_stream_readable":105,"./_stream_writable":107,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/lib/_stream_duplex.js":73,"_process":97,"core-util-is":108,"inherits":93}],104:[function(require,module,exports){
+},{"./_stream_readable":105,"./_stream_writable":107,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/lib/_stream_duplex.js":73,"_process":97,"core-util-is":108,"inherits":93}],104:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -16273,7 +16273,7 @@ if (!process.browser && process.env.READABLE_STREAM === 'disable') {
 }).call(this,require('_process'))
 },{"./lib/_stream_duplex.js":103,"./lib/_stream_passthrough.js":104,"./lib/_stream_readable.js":105,"./lib/_stream_transform.js":106,"./lib/_stream_writable.js":107,"_process":97,"stream":113}],111:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"./lib/_stream_transform.js":106,"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/transform.js":80}],112:[function(require,module,exports){
+},{"./lib/_stream_transform.js":106,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/transform.js":80}],112:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
 },{"./lib/_stream_writable.js":107}],113:[function(require,module,exports){
@@ -16407,7 +16407,7 @@ Stream.prototype.pipe = function(dest, options) {
 
 },{"events":92,"inherits":93,"readable-stream/duplex.js":102,"readable-stream/passthrough.js":109,"readable-stream/readable.js":110,"readable-stream/transform.js":111,"readable-stream/writable.js":112}],114:[function(require,module,exports){
 module.exports=require(79)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/node_modules/string_decoder/index.js":79,"buffer":88}],115:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/node_modules/string_decoder/index.js":79,"buffer":88}],115:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -17118,7 +17118,7 @@ function isNullOrUndefined(arg) {
 
 },{"punycode":98,"querystring":101}],116:[function(require,module,exports){
 module.exports=require(8)
-},{"/Users/icooke/Dropbox/Teaching/BioinformaticsTutorials/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],117:[function(require,module,exports){
+},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],117:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'

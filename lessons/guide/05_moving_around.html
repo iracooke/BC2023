@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <title>Submarine</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+</head>
+<body>
+  <div class="wrapper">
+
+      <section class="content">
+        <p><a href="index.html">table of contents</a></p>
+      <h2 id="05-getting-from-a-to-b-">05: Getting from &#39;A&#39; to &#39;B&#39;</h2>
+<p>We are in the home directory on the computer but we want to to work in the new <code>learning_unix</code> directory. To change directories in Unix, we use the <a href="http://en.wikipedia.org/wiki/Cd_(command)">cd</a> command:</p>
+<pre><code class="lang-bash">cd learning_unix
+learner@:~/learning_unix$
+</code></pre>
+<p>Notice that on this system the command prompt has expanded to include our current directory. This doesn&#39;t happen by default on all Unix systems, and you can configure what information appears as part of the command prompt (though we won&#39;t cover that here).</p>
+<p>Remember that you can always find out where you are using <code>pwd</code>:</p>
+<pre><code class="lang-bash">learner@:inner$ pwd
+/home/learner/learning_unix/
+</code></pre>
+
+        <div class="navlinks">
+          <a class="nextp button" href="06_going_home.html">OK, next! &raquo;</a>
+            <a class="lastp navlink" href="04_making_directories.html">&laquo; back</a>
+        </div>
+    </section>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+  <script>
+    function neaten(str) {
+      var pieces = str.split('_');
+      var s = pieces[1];
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      pieces[1] = s;
+      return pieces.join(' ');
+    }
+    $('.toc-list li a').text(function() {
+      return neaten($(this).text());
+    });
+  </script>
+</body>
+</html>

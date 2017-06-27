@@ -15,3 +15,9 @@
 	**Solution:** restart your notebook kernel.
 
 	![kernel activity](images/kernel_indicator.png?raw=true "Kernel Indicator")  
+
+
+#### Restarting the kernel
+
+#### Create new cells
+

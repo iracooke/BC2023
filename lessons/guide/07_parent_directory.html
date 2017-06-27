@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <title>Submarine</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+</head>
+<body>
+  <div class="wrapper">
+
+      <section class="content">
+        <p><a href="index.html">table of contents</a></p>
+      <h2 id="07-looking-upwards-in-the-unix-filesystem">07: Looking upwards in the Unix filesystem</h2>
+<p>Frequently, you will find that you want to look &#39;upwards&#39; one level in the directory hierarchy. Two dots <code>..</code> are used in Unix to refer to the <em>parent</em> directory of wherever you are. Every directory has a parent except the root level of the computer. Let&#39;s use <code>ls</code> to list the contents of the directory above our home directory:</p>
+<pre><code class="lang-bash">learner@:~$ ls ..
+</code></pre>
+<p>What if you wanted to look at files up <em>two</em> levels in the file system in one go? It&#39;s very simple, just use two sets of the <code>..</code> operator, separated by a forward slash:</p>
+<pre><code class="lang-bash">ls ../..
+</code></pre>
+<p>These examples use the <code>ls</code> command. Try using <code>..</code> move around with the <code>cd</code> command.</p>
+
+        <div class="navlinks">
+          <a class="nextp button" href="08_absolute_and_relative.html">OK, next! &raquo;</a>
+            <a class="lastp navlink" href="06_going_home.html">&laquo; back</a>
+        </div>
+    </section>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+  <script>
+    function neaten(str) {
+      var pieces = str.split('_');
+      var s = pieces[1];
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      pieces[1] = s;
+      return pieces.join(' ');
+    }
+    $('.toc-list li a').text(function() {
+      return neaten($(this).text());
+    });
+  </script>
+</body>
+</html>

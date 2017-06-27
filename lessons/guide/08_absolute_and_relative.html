@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <title>Submarine</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+</head>
+<body>
+  <div class="wrapper">
+
+      <section class="content">
+        <p><a href="index.html">table of contents</a></p>
+      <h2 id="08-absolute-and-relative-paths">08: Absolute and relative paths</h2>
+<p>Using <code>ls ..</code> allows us to refer to a directory <em>relative</em> to where we are now. You can also always refer to a directory based on its <em>absolute</em> location. E.g. if you are working in the <code>/home/learner/learning_unix</code> directory and you then want to list files in the <code>/tmp</code> directory, then you could do either of the following:</p>
+<pre><code class="lang-bash">learner@:learning_unix$ ls ../../../tmp
+</code></pre>
+<p>or...</p>
+<pre><code class="lang-bash">learner@:learning_unix$ ls /tmp
+</code></pre>
+<p>They both achieve the same thing, but the 2nd example requires that you know about the full <em>path</em> from the root level of the computer to your directory of interest (the &#39;path&#39; is an important concept in Unix). </p>
+<p>Note the leading <code>/</code> in the second command. A leading slash is what differentiates an <em>absolute</em> path from a <em>relative</em> path. </p>
+<p>Try navigating to your home directory with the <code>cd</code> command.  Then try the following two commands:</p>
+<pre><code class="lang-bash">learner@:~$ls /home/learner/
+</code></pre>
+<pre><code>learner@:~$ls home/learner/
+</code></pre><p>The first command says go the <code>learner</code> directory that is beneath the <code>home</code> directory that is at the top level (the root) of the file system. There can only be one <code>/home/learner</code> directory on any Unix system.  The second command says go to the <code>learner</code> directory that is beneath the <code>home</code> directory that is located wherever I am right now. </p>
+<p>The second command doesn&#39;t work.  It gives an error <code>No such file or directory</code>.  Make sure you understand why the second command gives an error.</p>
+
+        <div class="navlinks">
+          <a class="nextp button" href="09_advanced_ls.html">OK, next! &raquo;</a>
+            <a class="lastp navlink" href="07_parent_directory.html">&laquo; back</a>
+        </div>
+    </section>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+  <script>
+    function neaten(str) {
+      var pieces = str.split('_');
+      var s = pieces[1];
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      pieces[1] = s;
+      return pieces.join(' ');
+    }
+    $('.toc-list li a').text(function() {
+      return neaten($(this).text());
+    });
+  </script>
+</body>
+</html>
