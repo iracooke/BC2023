@@ -8,4 +8,4 @@
 - Q. My notebook has locked up and won't run any more commands. 
 	Your kernel might be waiting for input.  This can happen if you run certain commands (eg `grep`) without providing all the required inputs.  You can tell if your kernel is busy by looking at the kernel activity indicator
 
-	![kernel activity](../images/kernel_indicator.png)  
+	![kernel activity](images/kernel_indicator.png?raw=true "Kernel Indicator")  
