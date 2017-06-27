@@ -1,4 +1,4 @@
-## 09: Finding your way back home
+## 06: Finding your way back home
 
 Remember that the command prompt shows you the name of the directory that you are currently in, and that when you are in your home directory it shows you a tilde character (`~`) instead? This is because Unix uses the tilde character as a short-hand way of [specifying a home directory][home directory].
 

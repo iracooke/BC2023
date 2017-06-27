@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+  <title>Submarine</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+</head>
+<body>
+  <div class="wrapper">
+
+      <section class="content">
+        <p><a href="index.html">table of contents</a></p>
+      <h2 id="15-removing-files-and-directories">15: Removing files and directories</h2>
+<p>We&#39;ve now created a bunch of directories and files that we probably don&#39;t want to keep. In order to remove these, we will use the <a href="http://en.wikipedia.org/wiki/Rm_(Unix)">rm</a> (remove) command.</p>
+<blockquote>
+<p><strong><em>Please read the next section VERY carefully. Misuse of the <code>rm</code> command can lead to needless death &amp; destruction</em></strong></p>
+</blockquote>
+<p>Potentially, <code>rm</code> is a very dangerous command; if you delete something with <code>rm</code>, you will not get it back! It is possible to delete everything in your home directory (all directories and subdirectories) with <code>rm</code>, that is why it is such a dangerous command.</p>
+<p>Let me repeat that last part again. It is possible to delete EVERY file you have ever created with the <code>rm</code> command. Are you scared yet? You should be. Luckily there is a way of making <code>rm</code> a little bit safer. We can use it with the <code>-i</code> command-line option which will ask for confirmation before deleting anything (remember to use tab-completion). Run the following commands,
+and type &quot;y&quot; (for yes) to indicate you truly intend to delete the files.</p>
+<pre><code class="lang-bash">learner@:learning_unix$ cd temp
+learner@:temp$ ls
+earth.txt  heaven.txt  rags  temp2
+learner@:temp$ rm -i earth.txt heaven.txt rags
+rm: remove regular empty file earth.txt? y
+rm: remove regular empty file heaven.txt? y
+rm: remove regular empty file rags? y
+learner@:temp$ ls
+temp2
+</code></pre>
+<p>We could have simplified this step by using a wild-card (e.g. <code>rm -i *.txt</code>) or we could have made things more complex by removing each file with a separate <code>rm</code> command. </p>
+<p>Now all that remains is <code>temp2</code> which is a directory.  Let&#39;s see what happens if we try to remove it using the regular <code>rm</code> command.</p>
+<pre><code class="lang-bash">learner@:temp$ rmdir temp2/
+rm: cannot remove &#39;temp2&#39;: Is a directory
+</code></pre>
+<p>The <code>rm</code> refuses to remove <code>temp2</code> because it a directory. This is to prevent you from accidentally deleting a directory which could potentially contain a large number of files. We need to use the <code>r</code> (recursive) option to tell <code>rm</code> that we want to remove the directory and everything beneath it.  Be <strong>very</strong> careful when using this command.</p>
+<pre><code class="lang-bash">learner@:temp$ rm -r temp2
+</code></pre>
+<p>To delete the <code>temp</code> directory we need to move up to it&#39;s parent</p>
+<pre><code class="lang-bash">learner@:temp$ cd ..
+learner@:learning_unix$ rm -r temp
+</code></pre>
+
+        <div class="navlinks">
+          <a class="nextp button" href="16_copying_files.html">OK, next! &raquo;</a>
+            <a class="lastp navlink" href="14_renaming_files.html">&laquo; back</a>
+        </div>
+    </section>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+  <script>
+    function neaten(str) {
+      var pieces = str.split('_');
+      var s = pieces[1];
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      pieces[1] = s;
+      return pieces.join(' ');
+    }
+    $('.toc-list li a').text(function() {
+      return neaten($(this).text());
+    });
+  </script>
+</body>
+</html>
