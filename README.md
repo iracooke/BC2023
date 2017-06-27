@@ -13,7 +13,7 @@ Prior to each bioinformatics workshop you should work through the relevant secti
 
 Workshop Date |        Workshop Theme         | Preparation
 -------- | -------------------- | --------------------
-Week 2| Introduction to Jupyter notebook | Lesson 1
+Week 2| Introduction to Jupyter notebook | Chapter 0-9
 Week 4| The Bash shell | Sections 6-10
 Week 6| Data in FASTA format | Sections 11-12
 Week 8| Awk and Bioawk | Sections 13-15

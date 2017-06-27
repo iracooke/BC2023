@@ -12,13 +12,14 @@
       {{#if index}}
         <section class="content">
         <h1>Welcome!</h1>
-        <p>This site is designed to help you learn to analyse biological sequence data using the UNIX terminal (aka the command line). </p>
-        <p>If you look to your right, you'll see there is a terminal that is connected to a <strong>docker container</strong> -- that is a computer, in the cloud but accessible right here in your browser!</p>
-        <p>Below the terminal, there's a filebrowser and an editor. These are connected to the same machine. Every time you type in the editor, the bootcamp automatically saves the file. Groovy.</p>
-        <div style="padding: 0 10px; background: #eeeeee; font-size: 0.8em;">
-          <p>The bootcamp tutorial text was adapted from <a href="http://rescuedbycode.com/linux-bootcamp">the original</a> by <a href="http://www.keithbradnam.com/">Keith Bradnam</a>. The infrastructure, including <a href="https://github.com/maxogden/adventure-time">adventure-time</a> and <a href="https://github.com/mafintosh/docker-browser-server">docker-browser-server</a>, was built by <a href="https://github.com/maxogden">@maxogden</a> and <a href="https://github.com/maxogden">@mafintosh</a>. The setup of this app was based on the <a href="https://github.com/maxogden/get-dat">get-dat adventure</a>. This adventure was made by <a href="http://rik.smith-unna.com/about">Richard Smith-Unna</a>. This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons 4.0 International License</a>. <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a></p>
-          <p>Please post feedback at <a href="https://github.com/blahah/command_line_bootcamp/issues">the issue tracker</a></p>
-        </div>
+        <p>This site is designed to help you learn to analyse biological sequence data using the UNIX terminal (aka the "command line"). </p>
+
+        <p>On the top right of this page you should see a terminal with a flashing cursor.  This is connected to a computer in the cloud running linux. This guide will show you commands that you can type in this terminal. You should also feel free to experiment as this is the best way to learn.</p>
+        <p>Below the terminal, there's a filebrowser and an editor. These are connected to the same machine. Every time you type in the editor, the bootcamp automatically saves the file. </p>
+
+        <p><strong>Be aware: When you close this browser window your server will be shut down. Servers left open for more than an hour will be deleted (just refresh to get a new one).</strong></p>
+        <p>Ok, ready to dive in? <a class="nextp button" href="{{index.0.href}}">Let's go! &raquo;</a></p>
+
         <h4>Table of Contents</h4>
         <div class="jumbotron-horizontal-rule"></div>
       	<div class="toc">
@@ -28,10 +29,14 @@
             {{/index}}
           </ul>
         </div>
+
+        <div style="padding: 0 10px; background: #eeeeee; font-size: 0.8em;">
+          <p>This tutorial was made by <a href="https://research.jcu.edu.au/portfolio/ira.cooke/">Ira Cooke</a> for BC2023 at James Cook University. It is is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons 4.0 International License</a>. 
+          <p>It is heavily based on the <a href="http://rik.smith-unna.com/command_line_bootcamp/"> command line bootcamp</a> by <a href="http://rik.smith-unna.com/about">Richard Smith-Unna</a>, which in turn included text adapted from <a href="http://rescuedbycode.com/linux-bootcamp">the linux bootcamp</a> by <a href="http://www.keithbradnam.com/">Keith Bradnam</a>. The infrastructure, including <a href="https://github.com/maxogden/adventure-time">adventure-time</a> and <a href="https://github.com/mafintosh/docker-browser-server">docker-browser-server</a>, was built by <a href="https://github.com/maxogden">@maxogden</a> and <a href="https://github.com/maxogden">@mafintosh</a>. The setup of this app was based on the <a href="https://github.com/maxogden/get-dat">get-dat adventure</a>. </p>
+          <p>Please post feedback at <a href="https://github.com/iracooke/BC2023/issues">the issue tracker</a></p>
+        </div>
+
         
-      <p><strong>Be aware: When you close this browser window your server will be shut down. Servers left open for more than an hour will be deleted (just refresh to get a new one).</strong></p>
-      <p>Ok, ready to dive in? <a class="nextp button" href="{{index.0.href}}">Let's go! &raquo;</a>
-      </p>
       </section>
       {{/if}}
 
