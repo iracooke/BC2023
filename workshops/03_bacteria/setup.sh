@@ -1,20 +1,11 @@
 NOTEBOOK_HOME="${NOTEBOOK_HOME:-`pwd`}"
 export NOTEBOOK_HOME
 
-export PATH=${PATH}:/usr/games
-
-rm -rf ${NOTEBOOK_HOME}/E2
-mkdir E2
-echo "1" > E2/5_H.txt
-echo "11" > E2/2_E.txt
-echo "111" > E2/3_L.txt
-echo "1111" > E2/4_L.txt
-echo "11111" > E2/1_O.txt
-echo "1111" > E2/1_O.csv
+export PATH=${PATH}:.
 
 display_answer(){
-	test_answer=$1
-	reference_answer=$2
+    test_answer=$1
+    reference_answer=$2
     if [ "${test_answer}" == "${reference_answer}" ]; then
         echo "Your answer is correct"
         return 0
@@ -51,27 +42,30 @@ test_answer(){
 }
 
 
-
-
 test_e1(){
-    test_answer 1 "$(ls)"
+    test_answer 1 "$(echo 20455)"
 }
 
 
 test_e2(){
-    test_answer 2 "$(ls -r )"
+    test_answer 2 "$(head -n 5 genomic_sequence.fasta | translate.py)"
 }
 
+
 test_e3(){
-    test_answer 3 "$(ls E2)"
+    test_answer 3 "$(translate.py -f 1 genomic_sequence.fasta | tr -cd '*' | wc -m)"
 }
 
 test_e4(){
-    test_answer 4 "$(ls -1 -Sr E2)"
+    test_answer 4 "$(translate.py -f 1 genomic_sequence.fasta | tail -n +2 | tr -cd 'C' | wc -m)"
 }
 
 test_e5(){
-    test_answer 5 "$(ls -1 -Sr E2/*.txt)"
- }
+    test_answer 5 "$(translate.py -f 0 --split -F 'tabular' genomic_sequence.fasta | wc -l)"
+}
+
+test_e6(){
+    test_answer 6 "$(translate.py -f 0 --split -F 'tabular' genomic_sequence.fasta | sort -n -k 6 | tail -n 100 | grep 'M' | wc -l)"
+}
 
 echo "Setup Done"

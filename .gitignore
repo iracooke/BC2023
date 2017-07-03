@@ -3,3 +3,4 @@ node_modules
 docker.err
 docker.log
 .ipynb_checkpoints
+resources
