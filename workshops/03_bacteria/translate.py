@@ -27,7 +27,9 @@ translation_code = {
 }
 
 def parse_fasta_header( header ):
-	accession,description = header.split(" ",1)
+	# import pdb; pdb.set_trace();
+	sh = header.split(None,1)
+	accession,description = sh if len(sh) == 2 else [sh[0],""]
 	return accession[1:],description
 
 # Given a file pointer to a FASTA file
@@ -55,14 +57,19 @@ def dna2aa( sequence , code, frame ):
 	coding_sequence = coding_sequence[abs(frame)-1:]
 	return ''.join([ code.get(coding_sequence[3*i:3*i+3],'X') for i in range(len(coding_sequence)//3) ])
 
-
-def get_orfs(translated_seq,frame,parent_accession):
-	start=frame
+def get_orfs(translated_seq,na_seq,frame,parent_accession):
+	start=abs(frame)-1 if frame > 0 else len(na_seq) - abs(frame) + 1
 	N=0
 	for orf in translated_seq.split("*"):
-		os = start
-		oe = start+len(orf)*3
-		start = oe+3
+		if frame > 0:
+			os = start
+			oe = start+len(orf)*3
+			start = oe+3
+		else: 
+			os = start-len(orf)*3
+			oe = start
+			start = os-3
+
 		N=N+1
 		strand = lambda x: ("+", "-")[x < 0]
 		yield { 'parent':parent_accession, 'start':os , 'end':oe , 'strand':strand(frame), 'frame':frame,
@@ -94,7 +101,7 @@ def translate_frame(seq,accession,translation_code,frame,of,split):
 	translated_seq = dna2aa(seq,translation_code,frame)
 
 	if split:
-		for orf in get_orfs(translated_seq,frame,accession):
+		for orf in get_orfs(translated_seq,seq,frame,accession):
 			print_orf(orf,of)
 	else:
 		print_translated_seq(translated_seq,frame,of,accession)
