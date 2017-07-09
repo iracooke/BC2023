@@ -7,13 +7,13 @@ FROM ubuntu
 
 RUN apt-get update && apt-get install -y curl git python build-essential nano man
 
-RUN apt-get install -y fortune cowsay bedtools
+RUN apt-get install -y fortune cowsay bedtools wget
 
 # Install latest bedtools
-#RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.26.0/bedtools-2.26.0.tar.gz && \
-#	tar -zxvf bedtools-2.26.0.tar.gz && \
-#	cd bedtools2 && \
-#	make && \
+RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.26.0/bedtools-2.26.0.tar.gz && \
+	tar -zxvf bedtools-2.26.0.tar.gz && \
+	cd bedtools2 && \
+	make && ls && cd .. 
 
 
 # create a non-root user
