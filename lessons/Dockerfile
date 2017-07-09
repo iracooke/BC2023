@@ -7,9 +7,14 @@ FROM ubuntu
 
 RUN apt-get update && apt-get install -y curl git python build-essential nano man
 
-RUN apt-get install -y fortune cowsay
+RUN apt-get install -y fortune cowsay bedtools
 
 # Install latest bedtools
+#RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.26.0/bedtools-2.26.0.tar.gz && \
+#	tar -zxvf bedtools-2.26.0.tar.gz && \
+#	cd bedtools2 && \
+#	make && \
+
 
 # create a non-root user
 RUN useradd -ms /bin/bash learner
@@ -46,7 +51,7 @@ RUN echo "expose-fs >> .fs.out 2>> .fs.err &" >> /home/learner/.bashrc
 RUN echo "export PS1=\"\[$(tput bold)\]\[\033[38;5;75m\]\u\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;232m\]@:\[$(tput sgr0)\]\[\033[38;5;9m\]\W\[$(tput sgr0)\]\[\033[38;5;232m\]\\$\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput sgr0)\]\"" >> /home/learner/.bashrc
 
 # some example directories for the tutorial
-RUN mkdir a_directory another_directory
+RUN mkdir example_data
 
 # Add
-example/pokedex.txt
+COPY example_data example_data/pokedex.txt
