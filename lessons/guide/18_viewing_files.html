@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+  <title>Submarine</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+</head>
+<body>
+  <div class="wrapper">
+
+      <section class="content">
+        <p><a href="index.html">table of contents</a></p>
+      <h2 id="18-viewing-files">18: Viewing files</h2>
+<p>The command line has several programs for viewing the contents of files. </p>
+<p>The <a href="http://en.wikipedia.org/wiki/Cat_(Unix)">cat</a> can be used to show the entire contents of a file by printing it in the terminal. </p>
+<pre><code class="lang-bash">learner@:learning_unix$ echo &quot;Bilbo&quot; &gt; hobbits.txt
+learner@:learning_unix$ cat hobbits.txt
+learner@:learning_unix$ echo &quot;Frodo&quot; &gt;&gt; hobbits.txt
+learner@:learning_unix$ echo &quot;Merry&quot; &gt;&gt; hobbits.txt
+learner@:learning_unix$ cat hobbits.txt
+</code></pre>
+<p>The <a href="http://en.wikipedia.org/wiki/Less_(Unix)">less</a> opens the file in a view which allows you to scroll and search within the file.  It isn&#39;t very useful with <code>hobbits.txt</code> because there isn&#39;t much content in it. </p>
+<p>Let&#39;s open a much larger file.</p>
+<pre><code class="lang-bash">cd ~
+learner@:~$ less examples/pokedex.txt
+</code></pre>
+<p>When you are using less, you can bring up a page of help commands by pressing <code>h</code>, scroll forward a page by pressing <code>space</code>, or go forward or backwards one line at a time by pressing <code>j</code> or <code>k</code>. To exit less, press <code>q</code> (for quit). The <code>less</code> program also does many other useful things (including text searching).</p>
+<p>The <a href="http://en.wikipedia.org/wiki/Head_(Unix)">head</a> shows the top few lines of a file.</p>
+<pre><code class="lang-bash">learner@:~$ head examples/pokedex.txt
+</code></pre>
+<p>The <a href="http://en.wikipedia.org/wiki/Tail_(Unix)">tail</a> shows the last few lines of a file</p>
+<pre><code class="lang-bash">learner@:~$ tail examples/pokedex.txt
+</code></pre>
+
+        <div class="navlinks">
+          <a class="nextp button" href="19_counting_characters.html">OK, next! &raquo;</a>
+            <a class="lastp navlink" href="17_redirection.html">&laquo; back</a>
+        </div>
+    </section>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+  <script>
+    function neaten(str) {
+      var pieces = str.split('_');
+      var s = pieces[1];
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      pieces[1] = s;
+      return pieces.join(' ');
+    }
+    $('.toc-list li a').text(function() {
+      return neaten($(this).text());
+    });
+  </script>
+</body>
+</html>

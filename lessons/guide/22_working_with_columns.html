@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <title>Submarine</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+</head>
+<body>
+  <div class="wrapper">
+
+      <section class="content">
+        <p><a href="index.html">table of contents</a></p>
+      <h2 id="22-working-with-columns">22: Working with columns</h2>
+<p>Many types of biological data are stored as files divided into columns. Very simple examples are &quot;csv&quot; and &quot;tsv&quot; but bioinformatics specific types include &quot;bed&quot;, &quot;gff&quot; and &quot;vcf&quot;</p>
+<p>Unix has many tools to handle and manipulate this type of files.</p>
+<p>We will work with a file called in the &quot;example_data&quot; directory called <code>pokedex.txt</code>. First let&#39;s look at the first few entries of the file.  This will often reveal how many columns and what they represent.</p>
+<pre><code class="lang-bash">cd example_data
+head pokedex.txt
+</code></pre>
+<p>The first line gives the column names (there are <code>3</code> of them). </p>
+<p>Let&#39;s cut out the third column which is the <code>Type</code></p>
+<pre><code class="lang-bash">cut -f 3 pokedex.txt | head
+</code></pre>
+<p>Since it is a large file we piped the output to <code>head</code> so only the first <code>10</code> lines are printed.  </p>
+<p>Many of the types in column <code>3</code> are repeated.  Let&#39;s find out how many different types there are in total.</p>
+<p><code>`bash
+cut -f 3 pokedex.txt | sort -u | wc -l</code></p>
+<p>This introduces the <a href="http://en.wikipedia.org/wiki/Sort_(Unix)">sort</a> command which does exactly what you might expect. It sorts it&#39;s content.  By default it performs an alphanumeric sort but it has options for numeric sort and for selecting the column to sort by.  Here we have used <code>sort -u</code> which first sorts and then removes any duplicats (<code>-u</code> stands for unique).</p>
+
+        <div class="navlinks">
+        </div>
+    </section>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+  <script>
+    function neaten(str) {
+      var pieces = str.split('_');
+      var s = pieces[1];
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      pieces[1] = s;
+      return pieces.join(' ');
+    }
+    $('.toc-list li a').text(function() {
+      return neaten($(this).text());
+    });
+  </script>
+</body>
+</html>

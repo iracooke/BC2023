@@ -18,7 +18,9 @@
 <pre><code class="lang-bash">learner@:~$ cd example_data
 </code></pre>
 <p>The following examples show how you can use grep&#39;s command-line options to:</p>
-<p>show lines that match a specified pattern**</p>
+<ul>
+<li>show lines that match a specified pattern</li>
+</ul>
 <pre><code class="lang-bash">learner@:example_data$ grep &#39;was&#39; opening_lines.txt
 The Galactic Empire was dying.                                                    
 It was a pleasure to burn.                                                        
@@ -28,20 +30,26 @@ It was the day my grandmother exploded.
 When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.
 Marley was dead, to begin with.
 </code></pre>
-<p>show lines that don&#39;t match a pattern (<code>-v</code>)</p>
+<ul>
+<li>show lines that don&#39;t match a pattern (<code>-v</code>)</li>
+</ul>
 <pre><code>learner@:example_data$ grep -v &#39;was&#39; opening_lines.txt
 Now is the winter of our discontent.                                              
 All children, except one, grow up.                                                
 In a hole in the ground there lived a hobbit.                                     
 I am an invisible man.
-</code></pre><p>ignore case when matching (<code>-i</code>)</p>
+</code></pre><ul>
+<li>ignore case when matching (<code>-i</code>)</li>
+</ul>
 <pre><code>learner@:example_data$ grep all opening_lines.txt
 Call me Ishmael.
 
 learner@:example_data$ grep -i all opening_lines.txt
 Call me Ishmael.
 All children, except one, grow up.
-</code></pre><p>only match whole words (<code>-w</code>)</p>
+</code></pre><ul>
+<li>only match whole words (<code>-w</code>)</li>
+</ul>
 <pre><code>learner@:example_data$ grep in opening_lines.txt
 Now is the winter of our discontent.
 The Galactic Empire was dying.
@@ -53,27 +61,29 @@ Marley was dead, to begin with.
 learner@:example_data$ grep -w in opening_lines.txt
 In a hole in the ground there lived a hobbit.
 It was a bright, cold day in April, and the clocks were striking thirteen.
-
-Use wildcard characters and other patterns to allow for alternatives (`*`, `.`, and `[]`)
-</code></pre><p>learner@:example_data$ grep -w o.. opening_lines.txt
+</code></pre><ul>
+<li>Use wildcard characters and other patterns to allow for alternatives (<code>*</code>, <code>.</code>, and <code>[]</code>)</li>
+</ul>
+<pre><code>learner@:example_data$ grep -w o.. opening_lines.txt
 Now is the winter of our discontent.
-All children, except one, grow up.</p>
-<p>learner@:example_data$ grep [aeiou]t opening_lines.txt
+All children, except one, grow up.
+
+learner@:example_data$ grep [aeiou]t opening_lines.txt
 In a hole in the ground there lived a hobbit.
 It was love at first sight.
 It was the day my grandmother exploded.
 When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.
-Marley was dead, to begin with.</p>
-<p>learner@:example_data$ grep -w -i [aeiou]t opening_lines.txt
+Marley was dead, to begin with.
+
+learner@:example_data$ grep -w -i [aeiou]t opening_lines.txt
 It was a pleasure to burn.
 It was a bright, cold day in April, and the clocks were striking thirteen.
 It was love at first sight.
 It was the day my grandmother exploded.
 When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.
-```</p>
-
+</code></pre>
         <div class="navlinks">
-          <a class="nextp button" href="27_working_with_columns.html">OK, next! &raquo;</a>
+          <a class="nextp button" href="21_combining_commands.html">OK, next! &raquo;</a>
             <a class="lastp navlink" href="19_counting_characters.html">&laquo; back</a>
         </div>
     </section>
