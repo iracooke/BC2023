@@ -4367,7 +4367,7 @@ Terminal.tangoColors = [
   '#729fcf',
   '#ad7fa8',
   '#34e2e2',
-  '#333333'
+  '#eeeeec'
 ];
 
 Terminal.xtermColors = [
