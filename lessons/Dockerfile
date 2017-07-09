@@ -13,7 +13,7 @@ RUN apt-get install -y fortune cowsay bedtools wget
 RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.26.0/bedtools-2.26.0.tar.gz && \
 	tar -zxvf bedtools-2.26.0.tar.gz && \
 	cd bedtools2 && \
-	make && ls && cd .. 
+	make && mv ./bin/* /usr/bin/ && cd .. 
 
 
 # create a non-root user
