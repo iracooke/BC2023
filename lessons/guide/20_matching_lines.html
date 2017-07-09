@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+  <title>Submarine</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+</head>
+<body>
+  <div class="wrapper">
+
+      <section class="content">
+        <p><a href="index.html">table of contents</a></p>
+      <h2 id="20-matching-lines-in-files-with-grep">20: Matching lines in files with grep</h2>
+<p>You will often want to search files to find lines that match a certain pattern. The Unix command <a href="http://en.wikipedia.org/wiki/Grep">grep</a> does this (and much more). </p>
+<p>First change directory to <code>example_data</code>. </p>
+<pre><code class="lang-bash">learner@:~$ cd example_data
+</code></pre>
+<p>The following examples show how you can use grep&#39;s command-line options to:</p>
+<p>show lines that match a specified pattern**</p>
+<pre><code class="lang-bash">learner@:example_data$ grep &#39;was&#39; opening_lines.txt
+The Galactic Empire was dying.                                                    
+It was a pleasure to burn.                                                        
+It was a bright, cold day in April, and the clocks were striking thirteen.        
+It was love at first sight.                                                       
+It was the day my grandmother exploded.                                           
+When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.
+Marley was dead, to begin with.
+</code></pre>
+<p>show lines that don&#39;t match a pattern (<code>-v</code>)</p>
+<pre><code>learner@:example_data$ grep -v &#39;was&#39; opening_lines.txt
+Now is the winter of our discontent.                                              
+All children, except one, grow up.                                                
+In a hole in the ground there lived a hobbit.                                     
+I am an invisible man.
+</code></pre><p>ignore case when matching (<code>-i</code>)</p>
+<pre><code>learner@:example_data$ grep all opening_lines.txt
+Call me Ishmael.
+
+learner@:example_data$ grep -i all opening_lines.txt
+Call me Ishmael.
+All children, except one, grow up.
+</code></pre><p>only match whole words (<code>-w</code>)</p>
+<pre><code>learner@:example_data$ grep in opening_lines.txt
+Now is the winter of our discontent.
+The Galactic Empire was dying.
+In a hole in the ground there lived a hobbit.
+It was a bright, cold day in April, and the clocks were striking thirteen.
+I am an invisible man.
+Marley was dead, to begin with.
+
+learner@:example_data$ grep -w in opening_lines.txt
+In a hole in the ground there lived a hobbit.
+It was a bright, cold day in April, and the clocks were striking thirteen.
+
+Use wildcard characters and other patterns to allow for alternatives (`*`, `.`, and `[]`)
+</code></pre><p>learner@:example_data$ grep -w o.. opening_lines.txt
+Now is the winter of our discontent.
+All children, except one, grow up.</p>
+<p>learner@:example_data$ grep [aeiou]t opening_lines.txt
+In a hole in the ground there lived a hobbit.
+It was love at first sight.
+It was the day my grandmother exploded.
+When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.
+Marley was dead, to begin with.</p>
+<p>learner@:example_data$ grep -w -i [aeiou]t opening_lines.txt
+It was a pleasure to burn.
+It was a bright, cold day in April, and the clocks were striking thirteen.
+It was love at first sight.
+It was the day my grandmother exploded.
+When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.
+```</p>
+
+        <div class="navlinks">
+          <a class="nextp button" href="27_working_with_columns.html">OK, next! &raquo;</a>
+            <a class="lastp navlink" href="19_counting_characters.html">&laquo; back</a>
+        </div>
+    </section>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+  <script>
+    function neaten(str) {
+      var pieces = str.split('_');
+      var s = pieces[1];
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      pieces[1] = s;
+      return pieces.join(' ');
+    }
+    $('.toc-list li a').text(function() {
+      return neaten($(this).text());
+    });
+  </script>
+</body>
+</html>

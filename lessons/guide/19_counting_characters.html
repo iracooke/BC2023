@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <title>Submarine</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+</head>
+<body>
+  <div class="wrapper">
+
+      <section class="content">
+        <p><a href="index.html">table of contents</a></p>
+      <h2 id="19-counting-characters-words-and-lines-in-a-file">19: Counting characters, words and lines in a file</h2>
+<pre><code class="lang-bash">learner@:~$ cd learning_unix
+learner@:learning_unix$ ls -l hobbits.txt
+-rw-r--r-- 1 learner learner 18 Jul  8 21:53 hobbits.txt 
+
+learner@:learning_unix$ wc hobbits.txt
+ 3  3 18 hobbits.txt
+
+learner@:learning_unix$ wc -l hobbits.txt
+3 hobbits.txt
+</code></pre>
+<p>The <code>ls -l</code> option shows us a long listing, which includes the size of the file in bytes (in this case &#39;18&#39;). Another way of finding this out is by using Unix&#39;s <a href="https://en.wikipedia.org/wiki/Wc_(Unix)">wc</a> command (word count). By default this tells you many lines, words, and characters are in a specified file (or files), but you can use command-line options to give you just one of those statistics (in this case we count lines with <code>wc -l</code>).</p>
+
+        <div class="navlinks">
+          <a class="nextp button" href="20_matching_lines.html">OK, next! &raquo;</a>
+            <a class="lastp navlink" href="17_redirection.html">&laquo; back</a>
+        </div>
+    </section>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+  <script>
+    function neaten(str) {
+      var pieces = str.split('_');
+      var s = pieces[1];
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      pieces[1] = s;
+      return pieces.join(' ');
+    }
+    $('.toc-list li a').text(function() {
+      return neaten($(this).text());
+    });
+  </script>
+</body>
+</html>
