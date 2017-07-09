@@ -7,7 +7,7 @@ FROM ubuntu
 
 RUN apt-get update && apt-get install -y curl git python build-essential nano man
 
-RUN apt-get install -y fortune cowsay bedtools wget
+RUN apt-get install -y fortune cowsay bedtools wget zlib
 
 # Install latest bedtools
 RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.26.0/bedtools-2.26.0.tar.gz && \
