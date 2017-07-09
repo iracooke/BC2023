@@ -1,8 +1,8 @@
 # Command Line Learning Environment for BC2023
 
-Heavily based on [command_line_bootcamp](https://github.com/blahah/command_line_bootcamp) by @blahah Richard Smith-Unna
+Based on [command_line_bootcamp](https://github.com/blahah/command_line_bootcamp) by @blahah Richard Smith-Unna
 
-This version customised to match the intended learning outcomes of BC2023 tutorials.  Mostly less emphasis on path navigation and more on tools to parse file content.
+This version has been customised to match the intended learning outcomes of BC2023 tutorials.  
 
 ### build and deploy the frontend
 
@@ -29,7 +29,7 @@ npm install
 Render and deploy
 
 ```bash
-npm run render
+npm run render;npm run build;npm run fixcolor;npm run start
 ```
 
 ### setup and run the docker server backend
@@ -37,7 +37,6 @@ npm run render
 Instructions for running on a Nectar Ubuntu 16.04 image
 
 Login and switch to the root account
-
 
 ```bash
 apt-get update

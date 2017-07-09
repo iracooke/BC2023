@@ -7,6 +7,10 @@ FROM ubuntu
 
 RUN apt-get update && apt-get install -y curl git python build-essential nano man
 
+RUN apt-get install -y fortune cowsay
+
+# Install latest bedtools
+
 # create a non-root user
 RUN useradd -ms /bin/bash learner
 
@@ -43,3 +47,6 @@ RUN echo "export PS1=\"\[$(tput bold)\]\[\033[38;5;75m\]\u\[$(tput sgr0)\]\[$(tp
 
 # some example directories for the tutorial
 RUN mkdir a_directory another_directory
+
+# Add
+example/pokedex.txt
