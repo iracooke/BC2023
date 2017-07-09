@@ -54,4 +54,4 @@ RUN echo "export PS1=\"\[$(tput bold)\]\[\033[38;5;75m\]\u\[$(tput sgr0)\]\[$(tp
 RUN mkdir example_data
 
 # Add
-COPY example_data/pokedex.txt example_data/
+COPY example_data/*.txt example_data/
