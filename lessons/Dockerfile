@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y curl git python build-essential nano ma
 
 RUN apt-get install -y fortune cowsay wget zlib1g zlib1g-dev
 
-# Install latest bedtools
+# Install bedtools 2.26
 RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.26.0/bedtools-2.26.0.tar.gz && \
 	tar -zxvf bedtools-2.26.0.tar.gz && \
 	cd bedtools2 && \
@@ -54,4 +54,4 @@ RUN echo "export PS1=\"\[$(tput bold)\]\[\033[38;5;75m\]\u\[$(tput sgr0)\]\[$(tp
 RUN mkdir example_data
 
 # Add
-COPY example_data example_data/pokedex.txt
+COPY example_data/pokedex.txt example_data/
