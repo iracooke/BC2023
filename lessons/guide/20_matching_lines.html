@@ -41,12 +41,19 @@ I am an invisible man.
 </code></pre><ul>
 <li>ignore case when matching (<code>-i</code>)</li>
 </ul>
-<pre><code>learner@:example_data$ grep all opening_lines.txt
-Call me Ishmael.
+<pre><code>learner@:example_data$ grep the opening_lines.txt
+Now is the winter of our discontent.
+In a hole in the ground there lived a hobbit.
+It was a bright, cold day in April, and the clocks were striking thirteen.
+It was the day my grandmother exploded.
+When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.
 
-learner@:example_data$ grep -i all opening_lines.txt
-Call me Ishmael.
-All children, except one, grow up.
+learner@:example_data$ grep -i the opening_lines.txt
+Now is the winter of our discontent. 
+The Galactic Empire was dying.                                                                       In a hole in the ground there lived a hobbit.                                             
+It was a bright, cold day in April, and the clocks were striking thirteen.
+It was the day my grandmother exploded.
+When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.
 </code></pre><ul>
 <li>only match whole words (<code>-w</code>)</li>
 </ul>

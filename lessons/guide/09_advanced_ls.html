@@ -16,13 +16,13 @@
 <p>Like most Unix commands, <code>ls</code> supports <em>command-line options</em> which let you alter its behavior and functionality. Command-line options are - as the name suggests - optional arguments that are placed after the command name. They often take the form of single letters (following a dash). </p>
 <p>From your home directory type the <code>ls</code> command again, but this time using the <code>l</code> option:</p>
 <pre><code class="lang-bash">learner@:~$ ls -l
-total 8                                                                           
-drwxr-xr-x 2 learner learner 4096 Jun 23 04:35 a_directory                        
-drwxr-xr-x 2 learner learner 4096 Jun 23 04:35 another_directory
+total 8
+drwxr-xr-x 2 learner learner 4096 Jul  9 06:58 example_data
+drwxr-xr-x 2 learner learner 4096 Jul 24 00:59 learning_unix
 </code></pre>
 <p>Compare this to what happens without the <code>l</code> option.</p>
 <pre><code class="lang-bash">learner@:~$ ls
-a_directory  another_directory
+example_data  learning_unix
 </code></pre>
 <p>The <code>l</code> option stands for <em>long</em> which tells <code>ls</code> to produce long form output. In this mode it provides much more information for each file and directory (including file ownership and modification times). The &#39;d&#39; at the start of each line indicates that these are directories. There are many, many different options for the <code>ls</code> command. Try out the following (against any directory of your choice) to see how the output changes.</p>
 <pre><code class="lang-bash">ls -l
