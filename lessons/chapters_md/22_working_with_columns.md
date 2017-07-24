@@ -14,6 +14,7 @@ head pokedex.txt
 The first line gives the column names (there are `3` of them). 
 
 Let's cut out the third column which is the `Type`
+
 ```bash
 cut -f 3 pokedex.txt | head
 ```
