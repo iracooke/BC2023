@@ -4367,7 +4367,7 @@ Terminal.tangoColors = [
   '#729fcf',
   '#ad7fa8',
   '#34e2e2',
-  '#eeeeec'
+  '#333333'
 ];
 
 Terminal.xtermColors = [
@@ -17718,4 +17718,5 @@ function hasOwnProperty(obj, prop) {
 },{"./support/isBuffer":117,"_process":97,"inherits":116}],119:[function(require,module,exports){
 var terminal = require('adventure-time/terminal')
 terminal()
+
 },{"adventure-time/terminal":85}]},{},[119]);
