@@ -12,4 +12,4 @@ What if you wanted to look at files up _two_ levels in the file system in one go
 ls ../..
 ```
 
-These examples use the `ls` command. Try using `..` move around with the `cd` command.
+These examples use the `ls` command. Try using `..` to move around with the `cd` command.

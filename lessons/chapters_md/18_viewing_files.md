@@ -18,7 +18,7 @@ Let's open a much larger file.
 
 ```bash
 cd ~
-learner@:~$ less examples/pokedex.txt
+learner@:~$ less example_data/pokedex.txt
 ```
 
 When you are using less, you can bring up a page of help commands by pressing `h`, scroll forward a page by pressing `space`, or go forward or backwards one line at a time by pressing `j` or `k`. To exit less, press `q` (for quit). The `less` program also does many other useful things (including text searching).
@@ -26,13 +26,13 @@ When you are using less, you can bring up a page of help commands by pressing `h
 The [head][head command] shows the top few lines of a file.
 
 ```bash
-learner@:~$ head examples/pokedex.txt
+learner@:~$ head example_data/pokedex.txt
 ```
 
 The [tail][tail command] shows the last few lines of a file
 
 ```bash
-learner@:~$ tail examples/pokedex.txt
+learner@:~$ tail example_data/pokedex.txt
 ```
 
 [cat command]: http://en.wikipedia.org/wiki/Cat_(Unix)

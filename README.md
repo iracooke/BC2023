@@ -12,8 +12,8 @@ Most programs for analysis of large biological sequence datasets use a text base
 
 Workshop Date |  Workshop Theme  | Notebook  | Guide Chapters
 -------- | -------------------- | ------------ | -------------
-Week 2| Jupyter notebooks and Bash | `01_notebook_intro` | 0-11
-Week 4| Command line basics | `02_bash_basics` | 12-22
+Week 2| Jupyter notebooks and Bash | `01_notebook_intro` | 0-13
+Week 4| Command line basics | `02_bash_basics` | 14-22
 Week 6| Translation | `03_long_orfs` | 0-22
 Week 8| Genomic intervals | `04_bedtools` | 0-22
 Week 9| Revision and Assessment | `05_assessment` | 0-22

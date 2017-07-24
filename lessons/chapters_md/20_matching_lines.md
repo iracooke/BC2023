@@ -35,12 +35,19 @@ I am an invisible man.
 - ignore case when matching (`-i`)
 
 ```
-learner@:example_data$ grep all opening_lines.txt
-Call me Ishmael.
+learner@:example_data$ grep the opening_lines.txt
+Now is the winter of our discontent.
+In a hole in the ground there lived a hobbit.
+It was a bright, cold day in April, and the clocks were striking thirteen.
+It was the day my grandmother exploded.
+When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.
 
-learner@:example_data$ grep -i all opening_lines.txt
-Call me Ishmael.
-All children, except one, grow up.
+learner@:example_data$ grep -i the opening_lines.txt
+Now is the winter of our discontent. 
+The Galactic Empire was dying.                                                                       In a hole in the ground there lived a hobbit.                                             
+It was a bright, cold day in April, and the clocks were striking thirteen.
+It was the day my grandmother exploded.
+When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.  
 ```
 
 - only match whole words (`-w`)

@@ -1,6 +1,6 @@
 ## 17: Redirection
 
-Try the [echo][echo command] command.  It simply echoes back its argument as output.
+Try the [echo][] command.  It simply echoes back its argument as output.
 
 ```bash
 learner@:learning_unix$ echo "Bilbo"
@@ -27,3 +27,6 @@ Notice that we use `>>` and not just `>`. This operator will **append** to a fil
 >*** If you want to see the change you made to the file above in the editor you will need to click its name again in the file browser to refresh the editor.
 
 >***Careful when using file redirection (>), it will overwrite any existing file of the same name***
+
+[echo]: http://en.wikipedia.org/wiki/Echo_(Unix)
+[redirection]: https://en.wikipedia.org/wiki/Redirection_(computing)
