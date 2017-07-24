@@ -24,7 +24,7 @@ Many of the types in column `3` are repeated.  Let's find out how many different
 
 ```bash
 cut -f 3 pokedex.txt | sort -u | wc -l
-``
+```
 
 This introduces the [sort][] command which does exactly what you might expect. It sorts it's content.  By default it performs an alphanumeric sort but it has options for numeric sort and for selecting the column to sort by.  Here we have used `sort -u` which first sorts and then removes any duplicats (`-u` stands for unique).
 

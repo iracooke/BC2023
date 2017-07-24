@@ -25,8 +25,8 @@ head pokedex.txt
 </code></pre>
 <p>Since it is a large file we piped the output to <code>head</code> so only the first <code>10</code> lines are printed.  </p>
 <p>Many of the types in column <code>3</code> are repeated.  Let&#39;s find out how many different types there are in total.</p>
-<p><code>`bash
-cut -f 3 pokedex.txt | sort -u | wc -l</code></p>
+<pre><code class="lang-bash">cut -f 3 pokedex.txt | sort -u | wc -l
+</code></pre>
 <p>This introduces the <a href="http://en.wikipedia.org/wiki/Sort_(Unix)">sort</a> command which does exactly what you might expect. It sorts it&#39;s content.  By default it performs an alphanumeric sort but it has options for numeric sort and for selecting the column to sort by.  Here we have used <code>sort -u</code> which first sorts and then removes any duplicats (<code>-u</code> stands for unique).</p>
 
         <div class="navlinks">
