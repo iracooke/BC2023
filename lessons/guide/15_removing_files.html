@@ -32,7 +32,7 @@ temp2
 </code></pre>
 <p>We could have simplified this step by using a wild-card (e.g. <code>rm -i *.txt</code>) or we could have made things more complex by removing each file with a separate <code>rm</code> command. </p>
 <p>Now all that remains is <code>temp2</code> which is a directory.  Let&#39;s see what happens if we try to remove it using the regular <code>rm</code> command.</p>
-<pre><code class="lang-bash">learner@:temp$ rmdir temp2/
+<pre><code class="lang-bash">learner@:temp$ rm temp2/
 rm: cannot remove &#39;temp2&#39;: Is a directory
 </code></pre>
 <p>The <code>rm</code> refuses to remove <code>temp2</code> because it a directory. This is to prevent you from accidentally deleting a directory which could potentially contain a large number of files. We need to use the <code>r</code> (recursive) option to tell <code>rm</code> that we want to remove the directory and everything beneath it.  Be <strong>very</strong> careful when using this command.</p>

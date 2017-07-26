@@ -26,7 +26,7 @@ We could have simplified this step by using a wild-card (e.g. `rm -i *.txt`) or 
 Now all that remains is `temp2` which is a directory.  Let's see what happens if we try to remove it using the regular `rm` command.
 
 ```bash
-learner@:temp$ rmdir temp2/
+learner@:temp$ rm temp2/
 rm: cannot remove 'temp2': Is a directory
 ```
 
