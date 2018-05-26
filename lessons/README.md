@@ -36,7 +36,7 @@ npm run render;npm run build;npm run fixcolor;npm run start
 
 Instructions for running on a Nectar Ubuntu 16.04 image
 
-Login and switch to the root account
+Login and switch to the root account.  Assuming root is the only user that can run docker commands (default) this is necessary because ultimately docker-browser-server will need to be running under root.  A better way would be to grant docker run permissions to a non-root user and run under that.
 
 ```bash
 apt-get update
