@@ -62,6 +62,8 @@ docker build -t "bc2023" .
 docker-browser-server bc2023 -p 8080
 ```
 
+Test by visiting http://<ipadress>:8080/
+
 ### cleaning up long-running containers
 
 Sometimes people leave their browser windows open for a really long time. If you don't want to fund the docker container running for that time, you can clean up long-running containers:
