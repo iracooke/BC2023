@@ -5,7 +5,7 @@
 
 #### Create as many empty cells as you like to try out commands.  This will provide much better feedback on whether you are running the correct commands than entering things directly into an answer cell.  
 
-	![Make test cell](./images/make_test_cell.png)
+![Make test cell](./images/make_test_cell.png)
 
 
 ## Troubleshooting
@@ -20,10 +20,10 @@
 	
 	>Your kernel might be waiting for input.  This can happen if you run certain commands (eg `grep`) without providing all the required inputs.  You can tell if your kernel is busy by looking at the kernel activity indicator
 
-	![kernel activity](./images/kernel_indicator.png?raw=true "Kernel Indicator")  
+![kernel activity](./images/kernel_indicator.png?raw=true "Kernel Indicator")  
 
 	**Solution:** restart your notebook kernel.
 
-	![restart kernel](./images/restart_kernel.png)
+![restart kernel](./images/restart_kernel.png)
 
 
