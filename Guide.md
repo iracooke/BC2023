@@ -3,7 +3,9 @@
 
 ## General Advice
 
-#### Create as many empty cells as you like to try out commands.  This will provide much better feedback on whether you are running the correct commands than entering things directly into an answer cell.  
+#### Create Test Cells
+
+Create as many empty cells as you like to try out commands.  This will provide much better feedback on whether you are running the correct commands than entering things directly into an answer cell.  
 
 ![Make test cell](./images/make_test_cell.png)
 
