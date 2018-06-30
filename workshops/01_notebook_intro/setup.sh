@@ -67,7 +67,7 @@ test_e3(){
 }
 
 test_e4(){
-    test_answer 4 "$(ls -1 -Sr E2)"
+    test_answer 4 "$(ls -1 E2)"
 }
 
 test_e5(){
