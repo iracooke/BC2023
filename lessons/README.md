@@ -62,7 +62,7 @@ docker build -t "bc2023" .
 docker-browser-server bc2023 -p 8080
 ```
 
-Test by visiting http://<ipadress>:8080/
+Test by visiting http://ipadress:8080/
 
 ### cleaning up long-running containers
 
