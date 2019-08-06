@@ -40,6 +40,17 @@ check_dir(){
     fi
 }
 
+check_file(){ 
+    if [[ ! -f $1 ]];then
+        echo "Expected to find a file called $1 but no such file exists"
+        return 1
+    elif [[ ! -s $1 ]]; then
+        echo "Expected the file $1 to contain data but it doesn't. You may have corrupted data. Run setup again"
+        return 1
+    else
+        return 0
+    fi
+}
 
 # Defines a helper function for testing answers
 test_answer(){
@@ -47,7 +58,7 @@ test_answer(){
     e="$n"
     test_answer="$(eval e$1_answer)"
     reference_answer=$2
-    if [[ check_dir == 1 ]]; then
+    if [[ ! check_dir ]]; then
         check_dir
     else
         display_answer "$test_answer" "$reference_answer"
@@ -55,15 +66,15 @@ test_answer(){
 }
 
 test_answer_file(){
-    n=$1
+    file1=$1
 
-    if [[ check_dir == 1 ]]; then
+    if [[ ! check_dir ]]; then
         check_dir
     else
-        if [[ check_file == 1 ]]; then
-            check_file
-        else
+        if check_file ${file1};then
             display_answer_diff "${2}"
+        else
+            echo "Answer is incorrect"
         fi
     fi
 }
@@ -83,7 +94,7 @@ ensure_long_orfs_bed(){
 
 test_e1(){
     e1_answer
-    test_answer_file 1 "$(diff long_orfs.tabular \
+    test_answer_file long_orfs.tabular "$(diff long_orfs.tabular \
     <(translate.py -f 0 --split -F 'tabular' genomic_sequence.fasta\
      | sort -n -k 6 | tail -n 100 | grep 'M') )"
 }
@@ -98,7 +109,7 @@ test_e2(){
 test_e3(){
     ensure_long_orfs_tabular
     e3_answer
-    test_answer_file 3 "$(diff long_orfs.bed \
+    test_answer_file long_orfs.bed "$(diff long_orfs.bed \
     <(awk '{print $1,$2,$3,$5,$6,$4}' long_orfs.tabular | tr ' ' '\t' ))"
 }
 

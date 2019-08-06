@@ -3,6 +3,8 @@ export NOTEBOOK_HOME
 
 export PATH=${PATH}:.
 
+wget -q 'https://www.dropbox.com/s/sf0m60t9tepu0kr/h_pylori.gff?dl=0' -O h_pylori.gff
+
 display_answer(){
     test_answer=$1
     reference_answer=$2
@@ -44,6 +46,8 @@ check_file(){
     if [[ ! -f $1 ]];then
         echo "Expected to find a file called $1 but no such file exists"
         return 1
+    elif [[ ! -s $1 ]]; then
+        echo "Expected the file $1 to contain data but it doesn't. You may have corrupted data. Run setup again"
     else
         return 0
     fi
