@@ -28,3 +28,9 @@ To access the assignments;
 4. Click `Fetch` to download the relevant assignment.
 
 ![screenshot showing assignments tab in jupyter notebook](images/assignments_tab.png)
+
+### Troubleshooting Help
+
+We have compiled a list of tips on completing the exercises and overcoming common problems with the jupyter notebook software.  The tips are available at this URL
+
+[http://bc2023.bioinformatics.guide/Guide](http://bc2023.bioinformatics.guide/Guide)
