@@ -13,12 +13,21 @@ Create as many empty cells as you like to try out commands.  This will provide m
 
 ## Troubleshooting
 
-#### Self-assessment exercises don't work and/or example files are not in the right place.
+#### Tests don't work. 
+
+When you run tests you get a message such as "test_e4 command not found"
+
+> You most likely need to rerun the setup code at the top of the notebook.  You will need to rerun the setup code whenever you restart your notebook kernel.
+
+
+#### Example files are not in the right place.
 		
 >You are most likely in the wrong directory. All notebook exercises are designed to work without ever changing directories.  
 
-
 **Solution:** restart your notebook kernel.
+
+![restart kernel](./images/restart_kernel.png)
+
 
 #### Notebook has locked up and won't run any more commands. 
 	
