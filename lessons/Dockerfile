@@ -45,9 +45,10 @@ RUN . ~/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm alias default $NODE_VERS
 
 # expose the filesystem - needed for the file browser and editor
 # in adventure time
-RUN echo "expose-fs >> .fs.out 2>> .fs.err &" >> /home/learner/.bashrc
+#RUN echo "expose-fs >> .fs.out 2>> .fs.err &" >> /home/learner/.bashrc
 
 # more readable terminal prompt
+ENV TERM xterm
 RUN echo "export PS1=\"\[$(tput bold)\]\[\033[38;5;75m\]\u\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;232m\]@:\[$(tput sgr0)\]\[\033[38;5;9m\]\W\[$(tput sgr0)\]\[\033[38;5;232m\]\\$\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput sgr0)\]\"" >> /home/learner/.bashrc
 
 # some example directories for the tutorial
