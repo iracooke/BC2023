@@ -14,9 +14,11 @@ learner@:learning_unix$ echo "Bilbo" > hobbits.txt
 
 Notice that when you ran the command above it didn't print any output to the screen.  All of the output was captured and printed into a file called `hobbits.txt`.
 
-You should now see `hobbits.txt` appear in your file browser.  Click on it and the contents should appear in the editor.
+You can view the first few entries in this file using the `head` command like this
 
-Now try adding another name to the file.
+```bash
+learner@:learning_unix$ head hobbits.txt
+```
 
 ```bash
 learner@:learning_unix$ echo "Merry" >> hobbits.txt

@@ -108,7 +108,7 @@ module.exports = function(opts) {
   return result
 }
 
-},{"./style":47,"computed-style":2,"defaultcss":3,"duplexify":4,"ndjson":25,"term.js":49}],2:[function(require,module,exports){
+},{"./style":46,"computed-style":2,"defaultcss":3,"duplexify":4,"ndjson":25,"term.js":48}],2:[function(require,module,exports){
 // This code has been refactored for 140 bytes
 // You can see the original here: https://github.com/twolfson/computedStyle/blob/04cd1da2e30fa45844f95f5cb1ac898e9b9ef050/lib/computedStyle.js
 var computedStyle = function (el, prop, getComputedStyle) {
@@ -221,16 +221,22 @@ var eos = require('end-of-stream')
 var inherits = require('inherits')
 var shift = require('stream-shift')
 
-var SIGNAL_FLUSH = new Buffer([0])
+var SIGNAL_FLUSH = (Buffer.from && Buffer.from !== Uint8Array.from)
+  ? Buffer.from([0])
+  : new Buffer([0])
 
 var onuncork = function(self, fn) {
   if (self._corked) self.once('uncork', fn)
   else fn()
 }
 
+var autoDestroy = function (self, err) {
+  if (self._autoDestroy) self.destroy(err)
+}
+
 var destroyer = function(self, end) {
   return function(err) {
-    if (err) self.destroy(err.message === 'premature close' ? null : err)
+    if (err) autoDestroy(self, err.message === 'premature close' ? null : err)
     else if (end && !self._ended) self.end()
   }
 }
@@ -255,6 +261,7 @@ var Duplexify = function(writable, readable, opts) {
   this._readable = null
   this._readable2 = null
 
+  this._autoDestroy = !opts || opts.autoDestroy !== false
   this._forwardDestroy = !opts || opts.destroy !== false
   this._forwardEnd = !opts || opts.end !== false
   this._corked = 1 // start corked
@@ -420,7 +427,6 @@ Duplexify.prototype._write = function(data, enc, cb) {
   else cb()
 }
 
-
 Duplexify.prototype._finish = function(cb) {
   var self = this
   this.emit('preend')
@@ -446,13 +452,18 @@ Duplexify.prototype.end = function(data, enc, cb) {
 module.exports = Duplexify
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":97,"buffer":88,"end-of-stream":5,"inherits":8,"readable-stream":23,"stream-shift":24}],5:[function(require,module,exports){
+},{"_process":96,"buffer":87,"end-of-stream":5,"inherits":8,"readable-stream":23,"stream-shift":24}],5:[function(require,module,exports){
+(function (process){
 var once = require('once');
 
 var noop = function() {};
 
 var isRequest = function(stream) {
 	return stream.setHeader && typeof stream.abort === 'function';
+};
+
+var isChildProcess = function(stream) {
+	return stream.stdio && Array.isArray(stream.stdio) && stream.stdio.length === 3
 };
 
 var eos = function(stream, opts, callback) {
@@ -465,6 +476,7 @@ var eos = function(stream, opts, callback) {
 	var rs = stream._readableState;
 	var readable = opts.readable || (opts.readable !== false && stream.readable);
 	var writable = opts.writable || (opts.writable !== false && stream.writable);
+	var cancelled = false;
 
 	var onlegacyfinish = function() {
 		if (!stream.writable) onfinish();
@@ -472,17 +484,30 @@ var eos = function(stream, opts, callback) {
 
 	var onfinish = function() {
 		writable = false;
-		if (!readable) callback();
+		if (!readable) callback.call(stream);
 	};
 
 	var onend = function() {
 		readable = false;
-		if (!writable) callback();
+		if (!writable) callback.call(stream);
+	};
+
+	var onexit = function(exitCode) {
+		callback.call(stream, exitCode ? new Error('exited with error code: ' + exitCode) : null);
+	};
+
+	var onerror = function(err) {
+		callback.call(stream, err);
 	};
 
 	var onclose = function() {
-		if (readable && !(rs && rs.ended)) return callback(new Error('premature close'));
-		if (writable && !(ws && ws.ended)) return callback(new Error('premature close'));
+		process.nextTick(onclosenexttick);
+	};
+
+	var onclosenexttick = function() {
+		if (cancelled) return;
+		if (readable && !(rs && (rs.ended && !rs.destroyed))) return callback.call(stream, new Error('premature close'));
+		if (writable && !(ws && (ws.ended && !ws.destroyed))) return callback.call(stream, new Error('premature close'));
 	};
 
 	var onrequest = function() {
@@ -499,12 +524,15 @@ var eos = function(stream, opts, callback) {
 		stream.on('close', onlegacyfinish);
 	}
 
+	if (isChildProcess(stream)) stream.on('exit', onexit);
+
 	stream.on('end', onend);
 	stream.on('finish', onfinish);
-	if (opts.error !== false) stream.on('error', callback);
+	if (opts.error !== false) stream.on('error', onerror);
 	stream.on('close', onclose);
 
 	return function() {
+		cancelled = true;
 		stream.removeListener('complete', onfinish);
 		stream.removeListener('abort', onclose);
 		stream.removeListener('request', onrequest);
@@ -512,14 +540,17 @@ var eos = function(stream, opts, callback) {
 		stream.removeListener('end', onlegacyfinish);
 		stream.removeListener('close', onlegacyfinish);
 		stream.removeListener('finish', onfinish);
+		stream.removeListener('exit', onexit);
 		stream.removeListener('end', onend);
-		stream.removeListener('error', callback);
+		stream.removeListener('error', onerror);
 		stream.removeListener('close', onclose);
 	};
 };
 
 module.exports = eos;
-},{"once":7}],6:[function(require,module,exports){
+
+}).call(this,require('_process'))
+},{"_process":96,"once":7}],6:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -557,11 +588,19 @@ function wrappy (fn, cb) {
 },{}],7:[function(require,module,exports){
 var wrappy = require('wrappy')
 module.exports = wrappy(once)
+module.exports.strict = wrappy(onceStrict)
 
 once.proto = once(function () {
   Object.defineProperty(Function.prototype, 'once', {
     value: function () {
       return once(this)
+    },
+    configurable: true
+  })
+
+  Object.defineProperty(Function.prototype, 'onceStrict', {
+    value: function () {
+      return onceStrict(this)
     },
     configurable: true
   })
@@ -577,28 +616,45 @@ function once (fn) {
   return f
 }
 
+function onceStrict (fn) {
+  var f = function () {
+    if (f.called)
+      throw new Error(f.onceError)
+    f.called = true
+    return f.value = fn.apply(this, arguments)
+  }
+  var name = fn.name || 'Function wrapped with `once`'
+  f.onceError = name + " shouldn't be called more than once"
+  f.called = false
+  return f
+}
+
 },{"wrappy":6}],8:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
+    if (superCtor) {
+      ctor.super_ = superCtor
+      ctor.prototype = Object.create(superCtor.prototype, {
+        constructor: {
+          value: ctor,
+          enumerable: false,
+          writable: true,
+          configurable: true
+        }
+      })
+    }
   };
 } else {
   // old school shim for old browsers
   module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
+    if (superCtor) {
+      ctor.super_ = superCtor
+      var TempCtor = function () {}
+      TempCtor.prototype = superCtor.prototype
+      ctor.prototype = new TempCtor()
+      ctor.prototype.constructor = ctor
+    }
   }
 }
 
@@ -633,7 +689,7 @@ if (typeof Object.create === 'function') {
 
 /*<replacement>*/
 
-var processNextTick = require('process-nextick-args');
+var pna = require('process-nextick-args');
 /*</replacement>*/
 
 /*<replacement>*/
@@ -648,7 +704,7 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var util = require('core-util-is');
+var util = Object.create(require('core-util-is'));
 util.inherits = require('inherits');
 /*</replacement>*/
 
@@ -657,10 +713,13 @@ var Writable = require('./_stream_writable');
 
 util.inherits(Duplex, Readable);
 
-var keys = objectKeys(Writable.prototype);
-for (var v = 0; v < keys.length; v++) {
-  var method = keys[v];
-  if (!Duplex.prototype[method]) Duplex.prototype[method] = Writable.prototype[method];
+{
+  // avoid scope creep, the keys array can then be collected
+  var keys = objectKeys(Writable.prototype);
+  for (var v = 0; v < keys.length; v++) {
+    var method = keys[v];
+    if (!Duplex.prototype[method]) Duplex.prototype[method] = Writable.prototype[method];
+  }
 }
 
 function Duplex(options) {
@@ -679,6 +738,16 @@ function Duplex(options) {
   this.once('end', onend);
 }
 
+Object.defineProperty(Duplex.prototype, 'writableHighWaterMark', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function () {
+    return this._writableState.highWaterMark;
+  }
+});
+
 // the no-half-open enforcer
 function onend() {
   // if we allow half-open state, or if the writable side ended,
@@ -687,7 +756,7 @@ function onend() {
 
   // no more data can be written.
   // But allow more writes to happen in this tick.
-  processNextTick(onEndNT, this);
+  pna.nextTick(onEndNT, this);
 }
 
 function onEndNT(self) {
@@ -719,14 +788,8 @@ Duplex.prototype._destroy = function (err, cb) {
   this.push(null);
   this.end();
 
-  processNextTick(cb, err);
+  pna.nextTick(cb, err);
 };
-
-function forEach(xs, f) {
-  for (var i = 0, l = xs.length; i < l; i++) {
-    f(xs[i], i);
-  }
-}
 },{"./_stream_readable":11,"./_stream_writable":13,"core-util-is":17,"inherits":8,"process-nextick-args":19}],10:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -760,7 +823,7 @@ module.exports = PassThrough;
 var Transform = require('./_stream_transform');
 
 /*<replacement>*/
-var util = require('core-util-is');
+var util = Object.create(require('core-util-is'));
 util.inherits = require('inherits');
 /*</replacement>*/
 
@@ -776,7 +839,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
 },{"./_stream_transform":12,"core-util-is":17,"inherits":8}],11:[function(require,module,exports){
-(function (process){
+(function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -802,7 +865,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 
 /*<replacement>*/
 
-var processNextTick = require('process-nextick-args');
+var pna = require('process-nextick-args');
 /*</replacement>*/
 
 module.exports = Readable;
@@ -829,20 +892,21 @@ var EElistenerCount = function (emitter, type) {
 var Stream = require('./internal/streams/stream');
 /*</replacement>*/
 
-// TODO(bmeurer): Change this back to const once hole checks are
-// properly optimized away early in Ignition+TurboFan.
 /*<replacement>*/
+
 var Buffer = require('safe-buffer').Buffer;
+var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
 }
 function _isUint8Array(obj) {
-  return Object.prototype.toString.call(obj) === '[object Uint8Array]' || Buffer.isBuffer(obj);
+  return Buffer.isBuffer(obj) || obj instanceof OurUint8Array;
 }
+
 /*</replacement>*/
 
 /*<replacement>*/
-var util = require('core-util-is');
+var util = Object.create(require('core-util-is'));
 util.inherits = require('inherits');
 /*</replacement>*/
 
@@ -867,15 +931,13 @@ var kProxyEvents = ['error', 'close', 'destroy', 'pause', 'resume'];
 function prependListener(emitter, event, fn) {
   // Sadly this is not cacheable as some libraries bundle their own
   // event emitter implementation with them.
-  if (typeof emitter.prependListener === 'function') {
-    return emitter.prependListener(event, fn);
-  } else {
-    // This is a hack to make sure that our error handler is attached before any
-    // userland ones.  NEVER DO THIS. This is here only because this code needs
-    // to continue to work with older versions of Node.js that do not include
-    // the prependListener() method. The goal is to eventually remove this hack.
-    if (!emitter._events || !emitter._events[event]) emitter.on(event, fn);else if (isArray(emitter._events[event])) emitter._events[event].unshift(fn);else emitter._events[event] = [fn, emitter._events[event]];
-  }
+  if (typeof emitter.prependListener === 'function') return emitter.prependListener(event, fn);
+
+  // This is a hack to make sure that our error handler is attached before any
+  // userland ones.  NEVER DO THIS. This is here only because this code needs
+  // to continue to work with older versions of Node.js that do not include
+  // the prependListener() method. The goal is to eventually remove this hack.
+  if (!emitter._events || !emitter._events[event]) emitter.on(event, fn);else if (isArray(emitter._events[event])) emitter._events[event].unshift(fn);else emitter._events[event] = [fn, emitter._events[event]];
 }
 
 function ReadableState(options, stream) {
@@ -883,17 +945,26 @@ function ReadableState(options, stream) {
 
   options = options || {};
 
+  // Duplex streams are both readable and writable, but share
+  // the same options object.
+  // However, some cases require setting options to different
+  // values for the readable and the writable sides of the duplex stream.
+  // These options can be provided separately as readableXXX and writableXXX.
+  var isDuplex = stream instanceof Duplex;
+
   // object stream flag. Used to make read(n) ignore n and to
   // make all the buffer merging and length checks go away
   this.objectMode = !!options.objectMode;
 
-  if (stream instanceof Duplex) this.objectMode = this.objectMode || !!options.readableObjectMode;
+  if (isDuplex) this.objectMode = this.objectMode || !!options.readableObjectMode;
 
   // the point at which it stops calling _read() to fill the buffer
   // Note: 0 is a valid value, means "don't call _read preemptively ever"
   var hwm = options.highWaterMark;
+  var readableHwm = options.readableHighWaterMark;
   var defaultHwm = this.objectMode ? 16 : 16 * 1024;
-  this.highWaterMark = hwm || hwm === 0 ? hwm : defaultHwm;
+
+  if (hwm || hwm === 0) this.highWaterMark = hwm;else if (isDuplex && (readableHwm || readableHwm === 0)) this.highWaterMark = readableHwm;else this.highWaterMark = defaultHwm;
 
   // cast to ints.
   this.highWaterMark = Math.floor(this.highWaterMark);
@@ -1032,7 +1103,7 @@ function readableAddChunk(stream, chunk, encoding, addToFront, skipChunkCheck) {
     if (er) {
       stream.emit('error', er);
     } else if (state.objectMode || chunk && chunk.length > 0) {
-      if (typeof chunk !== 'string' && Object.getPrototypeOf(chunk) !== Buffer.prototype && !state.objectMode) {
+      if (typeof chunk !== 'string' && !state.objectMode && Object.getPrototypeOf(chunk) !== Buffer.prototype) {
         chunk = _uint8ArrayToBuffer(chunk);
       }
 
@@ -1266,7 +1337,7 @@ function emitReadable(stream) {
   if (!state.emittedReadable) {
     debug('emitReadable', state.flowing);
     state.emittedReadable = true;
-    if (state.sync) processNextTick(emitReadable_, stream);else emitReadable_(stream);
+    if (state.sync) pna.nextTick(emitReadable_, stream);else emitReadable_(stream);
   }
 }
 
@@ -1285,7 +1356,7 @@ function emitReadable_(stream) {
 function maybeReadMore(stream, state) {
   if (!state.readingMore) {
     state.readingMore = true;
-    processNextTick(maybeReadMore_, stream, state);
+    pna.nextTick(maybeReadMore_, stream, state);
   }
 }
 
@@ -1330,7 +1401,7 @@ Readable.prototype.pipe = function (dest, pipeOpts) {
   var doEnd = (!pipeOpts || pipeOpts.end !== false) && dest !== process.stdout && dest !== process.stderr;
 
   var endFn = doEnd ? onend : unpipe;
-  if (state.endEmitted) processNextTick(endFn);else src.once('end', endFn);
+  if (state.endEmitted) pna.nextTick(endFn);else src.once('end', endFn);
 
   dest.on('unpipe', onunpipe);
   function onunpipe(readable, unpipeInfo) {
@@ -1520,7 +1591,7 @@ Readable.prototype.on = function (ev, fn) {
       state.readableListening = state.needReadable = true;
       state.emittedReadable = false;
       if (!state.reading) {
-        processNextTick(nReadingNextTick, this);
+        pna.nextTick(nReadingNextTick, this);
       } else if (state.length) {
         emitReadable(this);
       }
@@ -1551,7 +1622,7 @@ Readable.prototype.resume = function () {
 function resume(stream, state) {
   if (!state.resumeScheduled) {
     state.resumeScheduled = true;
-    processNextTick(resume_, stream, state);
+    pna.nextTick(resume_, stream, state);
   }
 }
 
@@ -1588,18 +1659,19 @@ function flow(stream) {
 // This is *not* part of the readable stream interface.
 // It is an ugly unfortunate mess of history.
 Readable.prototype.wrap = function (stream) {
+  var _this = this;
+
   var state = this._readableState;
   var paused = false;
 
-  var self = this;
   stream.on('end', function () {
     debug('wrapped end');
     if (state.decoder && !state.ended) {
       var chunk = state.decoder.end();
-      if (chunk && chunk.length) self.push(chunk);
+      if (chunk && chunk.length) _this.push(chunk);
     }
 
-    self.push(null);
+    _this.push(null);
   });
 
   stream.on('data', function (chunk) {
@@ -1609,7 +1681,7 @@ Readable.prototype.wrap = function (stream) {
     // don't skip over falsy values in objectMode
     if (state.objectMode && (chunk === null || chunk === undefined)) return;else if (!state.objectMode && (!chunk || !chunk.length)) return;
 
-    var ret = self.push(chunk);
+    var ret = _this.push(chunk);
     if (!ret) {
       paused = true;
       stream.pause();
@@ -1630,12 +1702,12 @@ Readable.prototype.wrap = function (stream) {
 
   // proxy certain important events.
   for (var n = 0; n < kProxyEvents.length; n++) {
-    stream.on(kProxyEvents[n], self.emit.bind(self, kProxyEvents[n]));
+    stream.on(kProxyEvents[n], this.emit.bind(this, kProxyEvents[n]));
   }
 
   // when we try to consume some more bytes, simply unpause the
   // underlying stream.
-  self._read = function (n) {
+  this._read = function (n) {
     debug('wrapped _read', n);
     if (paused) {
       paused = false;
@@ -1643,8 +1715,18 @@ Readable.prototype.wrap = function (stream) {
     }
   };
 
-  return self;
+  return this;
 };
+
+Object.defineProperty(Readable.prototype, 'readableHighWaterMark', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function () {
+    return this._readableState.highWaterMark;
+  }
+});
 
 // exposed for testing purposes only.
 Readable._fromList = fromList;
@@ -1758,7 +1840,7 @@ function endReadable(stream) {
 
   if (!state.endEmitted) {
     state.ended = true;
-    processNextTick(endReadableNT, state, stream);
+    pna.nextTick(endReadableNT, state, stream);
   }
 }
 
@@ -1771,20 +1853,14 @@ function endReadableNT(state, stream) {
   }
 }
 
-function forEach(xs, f) {
-  for (var i = 0, l = xs.length; i < l; i++) {
-    f(xs[i], i);
-  }
-}
-
 function indexOf(xs, x) {
   for (var i = 0, l = xs.length; i < l; i++) {
     if (xs[i] === x) return i;
   }
   return -1;
 }
-}).call(this,require('_process'))
-},{"./_stream_duplex":9,"./internal/streams/BufferList":14,"./internal/streams/destroy":15,"./internal/streams/stream":16,"_process":97,"core-util-is":17,"events":92,"inherits":8,"isarray":18,"process-nextick-args":19,"safe-buffer":20,"string_decoder/":21,"util":87}],12:[function(require,module,exports){
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./_stream_duplex":9,"./internal/streams/BufferList":14,"./internal/streams/destroy":15,"./internal/streams/stream":16,"_process":96,"core-util-is":17,"events":91,"inherits":8,"isarray":18,"process-nextick-args":19,"safe-buffer":20,"string_decoder/":21,"util":86}],12:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1855,45 +1931,34 @@ module.exports = Transform;
 var Duplex = require('./_stream_duplex');
 
 /*<replacement>*/
-var util = require('core-util-is');
+var util = Object.create(require('core-util-is'));
 util.inherits = require('inherits');
 /*</replacement>*/
 
 util.inherits(Transform, Duplex);
 
-function TransformState(stream) {
-  this.afterTransform = function (er, data) {
-    return afterTransform(stream, er, data);
-  };
-
-  this.needTransform = false;
-  this.transforming = false;
-  this.writecb = null;
-  this.writechunk = null;
-  this.writeencoding = null;
-}
-
-function afterTransform(stream, er, data) {
-  var ts = stream._transformState;
+function afterTransform(er, data) {
+  var ts = this._transformState;
   ts.transforming = false;
 
   var cb = ts.writecb;
 
   if (!cb) {
-    return stream.emit('error', new Error('write callback called multiple times'));
+    return this.emit('error', new Error('write callback called multiple times'));
   }
 
   ts.writechunk = null;
   ts.writecb = null;
 
-  if (data !== null && data !== undefined) stream.push(data);
+  if (data != null) // single equals check for both `null` and `undefined`
+    this.push(data);
 
   cb(er);
 
-  var rs = stream._readableState;
+  var rs = this._readableState;
   rs.reading = false;
   if (rs.needReadable || rs.length < rs.highWaterMark) {
-    stream._read(rs.highWaterMark);
+    this._read(rs.highWaterMark);
   }
 }
 
@@ -1902,9 +1967,14 @@ function Transform(options) {
 
   Duplex.call(this, options);
 
-  this._transformState = new TransformState(this);
-
-  var stream = this;
+  this._transformState = {
+    afterTransform: afterTransform.bind(this),
+    needTransform: false,
+    transforming: false,
+    writecb: null,
+    writechunk: null,
+    writeencoding: null
+  };
 
   // start out asking for a readable event once data is transformed.
   this._readableState.needReadable = true;
@@ -1921,11 +1991,19 @@ function Transform(options) {
   }
 
   // When the writable side finishes, then flush out anything remaining.
-  this.once('prefinish', function () {
-    if (typeof this._flush === 'function') this._flush(function (er, data) {
-      done(stream, er, data);
-    });else done(stream);
-  });
+  this.on('prefinish', prefinish);
+}
+
+function prefinish() {
+  var _this = this;
+
+  if (typeof this._flush === 'function') {
+    this._flush(function (er, data) {
+      done(_this, er, data);
+    });
+  } else {
+    done(this, null, null);
+  }
 }
 
 Transform.prototype.push = function (chunk, encoding) {
@@ -1975,32 +2053,30 @@ Transform.prototype._read = function (n) {
 };
 
 Transform.prototype._destroy = function (err, cb) {
-  var _this = this;
+  var _this2 = this;
 
   Duplex.prototype._destroy.call(this, err, function (err2) {
     cb(err2);
-    _this.emit('close');
+    _this2.emit('close');
   });
 };
 
 function done(stream, er, data) {
   if (er) return stream.emit('error', er);
 
-  if (data !== null && data !== undefined) stream.push(data);
+  if (data != null) // single equals check for both `null` and `undefined`
+    stream.push(data);
 
   // if there's nothing in the write buffer, then that means
   // that nothing more will ever be provided
-  var ws = stream._writableState;
-  var ts = stream._transformState;
+  if (stream._writableState.length) throw new Error('Calling transform done when ws.length != 0');
 
-  if (ws.length) throw new Error('Calling transform done when ws.length != 0');
-
-  if (ts.transforming) throw new Error('Calling transform done when still transforming');
+  if (stream._transformState.transforming) throw new Error('Calling transform done when still transforming');
 
   return stream.push(null);
 }
 },{"./_stream_duplex":9,"core-util-is":17,"inherits":8}],13:[function(require,module,exports){
-(function (process){
+(function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2030,7 +2106,7 @@ function done(stream, er, data) {
 
 /*<replacement>*/
 
-var processNextTick = require('process-nextick-args');
+var pna = require('process-nextick-args');
 /*</replacement>*/
 
 module.exports = Writable;
@@ -2057,7 +2133,7 @@ function CorkedRequest(state) {
 /* </replacement> */
 
 /*<replacement>*/
-var asyncWrite = !process.browser && ['v0.10', 'v0.9.'].indexOf(process.version.slice(0, 5)) > -1 ? setImmediate : processNextTick;
+var asyncWrite = !process.browser && ['v0.10', 'v0.9.'].indexOf(process.version.slice(0, 5)) > -1 ? setImmediate : pna.nextTick;
 /*</replacement>*/
 
 /*<replacement>*/
@@ -2067,7 +2143,7 @@ var Duplex;
 Writable.WritableState = WritableState;
 
 /*<replacement>*/
-var util = require('core-util-is');
+var util = Object.create(require('core-util-is'));
 util.inherits = require('inherits');
 /*</replacement>*/
 
@@ -2082,13 +2158,16 @@ var Stream = require('./internal/streams/stream');
 /*</replacement>*/
 
 /*<replacement>*/
+
 var Buffer = require('safe-buffer').Buffer;
+var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
 }
 function _isUint8Array(obj) {
-  return Object.prototype.toString.call(obj) === '[object Uint8Array]' || Buffer.isBuffer(obj);
+  return Buffer.isBuffer(obj) || obj instanceof OurUint8Array;
 }
+
 /*</replacement>*/
 
 var destroyImpl = require('./internal/streams/destroy');
@@ -2102,18 +2181,27 @@ function WritableState(options, stream) {
 
   options = options || {};
 
+  // Duplex streams are both readable and writable, but share
+  // the same options object.
+  // However, some cases require setting options to different
+  // values for the readable and the writable sides of the duplex stream.
+  // These options can be provided separately as readableXXX and writableXXX.
+  var isDuplex = stream instanceof Duplex;
+
   // object stream flag to indicate whether or not this stream
   // contains buffers or objects.
   this.objectMode = !!options.objectMode;
 
-  if (stream instanceof Duplex) this.objectMode = this.objectMode || !!options.writableObjectMode;
+  if (isDuplex) this.objectMode = this.objectMode || !!options.writableObjectMode;
 
   // the point at which write() starts returning false
   // Note: 0 is a valid value, means that we always return false if
   // the entire buffer is not flushed immediately on write()
   var hwm = options.highWaterMark;
+  var writableHwm = options.writableHighWaterMark;
   var defaultHwm = this.objectMode ? 16 : 16 * 1024;
-  this.highWaterMark = hwm || hwm === 0 ? hwm : defaultHwm;
+
+  if (hwm || hwm === 0) this.highWaterMark = hwm;else if (isDuplex && (writableHwm || writableHwm === 0)) this.highWaterMark = writableHwm;else this.highWaterMark = defaultHwm;
 
   // cast to ints.
   this.highWaterMark = Math.floor(this.highWaterMark);
@@ -2227,6 +2315,7 @@ if (typeof Symbol === 'function' && Symbol.hasInstance && typeof Function.protot
   Object.defineProperty(Writable, Symbol.hasInstance, {
     value: function (object) {
       if (realHasInstance.call(this, object)) return true;
+      if (this !== Writable) return false;
 
       return object && object._writableState instanceof WritableState;
     }
@@ -2278,7 +2367,7 @@ function writeAfterEnd(stream, cb) {
   var er = new Error('write after end');
   // TODO: defer error events consistently everywhere, not just the cb
   stream.emit('error', er);
-  processNextTick(cb, er);
+  pna.nextTick(cb, er);
 }
 
 // Checks that a user-supplied chunk is valid, especially for the particular
@@ -2295,7 +2384,7 @@ function validChunk(stream, state, chunk, cb) {
   }
   if (er) {
     stream.emit('error', er);
-    processNextTick(cb, er);
+    pna.nextTick(cb, er);
     valid = false;
   }
   return valid;
@@ -2304,7 +2393,7 @@ function validChunk(stream, state, chunk, cb) {
 Writable.prototype.write = function (chunk, encoding, cb) {
   var state = this._writableState;
   var ret = false;
-  var isBuf = _isUint8Array(chunk) && !state.objectMode;
+  var isBuf = !state.objectMode && _isUint8Array(chunk);
 
   if (isBuf && !Buffer.isBuffer(chunk)) {
     chunk = _uint8ArrayToBuffer(chunk);
@@ -2357,6 +2446,16 @@ function decodeChunk(state, chunk, encoding) {
   }
   return chunk;
 }
+
+Object.defineProperty(Writable.prototype, 'writableHighWaterMark', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function () {
+    return this._writableState.highWaterMark;
+  }
+});
 
 // if we're already writing something, then just put this
 // in the queue, and wait our turn.  Otherwise, call _write
@@ -2415,10 +2514,10 @@ function onwriteError(stream, state, sync, er, cb) {
   if (sync) {
     // defer the callback if we are being called synchronously
     // to avoid piling up things on the stack
-    processNextTick(cb, er);
+    pna.nextTick(cb, er);
     // this can emit finish, and it will always happen
     // after error
-    processNextTick(finishMaybe, stream, state);
+    pna.nextTick(finishMaybe, stream, state);
     stream._writableState.errorEmitted = true;
     stream.emit('error', er);
   } else {
@@ -2516,6 +2615,7 @@ function clearBuffer(stream, state) {
     } else {
       state.corkedRequestsFree = new CorkedRequest(state);
     }
+    state.bufferedRequestCount = 0;
   } else {
     // Slow case, write chunks one-by-one
     while (entry) {
@@ -2526,6 +2626,7 @@ function clearBuffer(stream, state) {
 
       doWrite(stream, state, false, len, chunk, encoding, cb);
       entry = entry.next;
+      state.bufferedRequestCount--;
       // if we didn't call the onwrite immediately, then
       // it means that we need to wait until it does.
       // also, that means that the chunk and cb are currently
@@ -2538,7 +2639,6 @@ function clearBuffer(stream, state) {
     if (entry === null) state.lastBufferedRequest = null;
   }
 
-  state.bufferedRequestCount = 0;
   state.bufferedRequest = entry;
   state.bufferProcessing = false;
 }
@@ -2592,7 +2692,7 @@ function prefinish(stream, state) {
     if (typeof stream._final === 'function') {
       state.pendingcb++;
       state.finalCalled = true;
-      processNextTick(callFinal, stream, state);
+      pna.nextTick(callFinal, stream, state);
     } else {
       state.prefinished = true;
       stream.emit('prefinish');
@@ -2616,7 +2716,7 @@ function endWritable(stream, state, cb) {
   state.ending = true;
   finishMaybe(stream, state);
   if (cb) {
-    if (state.finished) processNextTick(cb);else stream.once('finish', cb);
+    if (state.finished) pna.nextTick(cb);else stream.once('finish', cb);
   }
   state.ended = true;
   stream.writable = false;
@@ -2664,17 +2764,14 @@ Writable.prototype._destroy = function (err, cb) {
   this.end();
   cb(err);
 };
-
-}).call(this,require('_process'))
-},{"./_stream_duplex":9,"./internal/streams/destroy":15,"./internal/streams/stream":16,"_process":97,"core-util-is":17,"inherits":8,"process-nextick-args":19,"safe-buffer":20,"util-deprecate":22}],14:[function(require,module,exports){
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./_stream_duplex":9,"./internal/streams/destroy":15,"./internal/streams/stream":16,"_process":96,"core-util-is":17,"inherits":8,"process-nextick-args":19,"safe-buffer":20,"util-deprecate":22}],14:[function(require,module,exports){
 'use strict';
-
-/*<replacement>*/
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Buffer = require('safe-buffer').Buffer;
-/*</replacement>*/
+var util = require('util');
 
 function copyBuffer(src, target, offset) {
   src.copy(target, offset);
@@ -2741,12 +2838,19 @@ module.exports = function () {
 
   return BufferList;
 }();
-},{"safe-buffer":20}],15:[function(require,module,exports){
+
+if (util && util.inspect && util.inspect.custom) {
+  module.exports.prototype[util.inspect.custom] = function () {
+    var obj = util.inspect({ length: this.length });
+    return this.constructor.name + ' ' + obj;
+  };
+}
+},{"safe-buffer":20,"util":86}],15:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
 
-var processNextTick = require('process-nextick-args');
+var pna = require('process-nextick-args');
 /*</replacement>*/
 
 // undocumented cb() API, needed for core, not for public API
@@ -2760,9 +2864,9 @@ function destroy(err, cb) {
     if (cb) {
       cb(err);
     } else if (err && (!this._writableState || !this._writableState.errorEmitted)) {
-      processNextTick(emitErrorNT, this, err);
+      pna.nextTick(emitErrorNT, this, err);
     }
-    return;
+    return this;
   }
 
   // we set destroyed to true before firing error callbacks in order
@@ -2779,7 +2883,7 @@ function destroy(err, cb) {
 
   this._destroy(err || null, function (err) {
     if (!cb && err) {
-      processNextTick(emitErrorNT, _this, err);
+      pna.nextTick(emitErrorNT, _this, err);
       if (_this._writableState) {
         _this._writableState.errorEmitted = true;
       }
@@ -2787,6 +2891,8 @@ function destroy(err, cb) {
       cb(err);
     }
   });
+
+  return this;
 }
 
 function undestroy() {
@@ -2817,7 +2923,7 @@ module.exports = {
 },{"process-nextick-args":19}],16:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":92}],17:[function(require,module,exports){
+},{"events":91}],17:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2928,7 +3034,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":94}],18:[function(require,module,exports){
+},{"../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":93}],18:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
@@ -2939,12 +3045,13 @@ module.exports = Array.isArray || function (arr) {
 (function (process){
 'use strict';
 
-if (!process.version ||
+if (typeof process === 'undefined' ||
+    !process.version ||
     process.version.indexOf('v0.') === 0 ||
     process.version.indexOf('v1.') === 0 && process.version.indexOf('v1.8.') !== 0) {
-  module.exports = nextTick;
+  module.exports = { nextTick: nextTick };
 } else {
-  module.exports = process.nextTick;
+  module.exports = process
 }
 
 function nextTick(fn, arg1, arg2, arg3) {
@@ -2981,8 +3088,9 @@ function nextTick(fn, arg1, arg2, arg3) {
   }
 }
 
+
 }).call(this,require('_process'))
-},{"_process":97}],20:[function(require,module,exports){
+},{"_process":96}],20:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -3046,10 +3154,34 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":88}],21:[function(require,module,exports){
+},{"buffer":87}],21:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 'use strict';
 
+/*<replacement>*/
+
 var Buffer = require('safe-buffer').Buffer;
+/*</replacement>*/
 
 var isEncoding = Buffer.isEncoding || function (encoding) {
   encoding = '' + encoding;
@@ -3161,10 +3293,10 @@ StringDecoder.prototype.fillLast = function (buf) {
 };
 
 // Checks the type of a UTF-8 byte, whether it's ASCII, a leading byte, or a
-// continuation byte.
+// continuation byte. If an invalid byte is detected, -2 is returned.
 function utf8CheckByte(byte) {
   if (byte <= 0x7F) return 0;else if (byte >> 5 === 0x06) return 2;else if (byte >> 4 === 0x0E) return 3;else if (byte >> 3 === 0x1E) return 4;
-  return -1;
+  return byte >> 6 === 0x02 ? -1 : -2;
 }
 
 // Checks at most 3 bytes at the end of a Buffer in order to detect an
@@ -3178,13 +3310,13 @@ function utf8CheckIncomplete(self, buf, i) {
     if (nb > 0) self.lastNeed = nb - 1;
     return nb;
   }
-  if (--j < i) return 0;
+  if (--j < i || nb === -2) return 0;
   nb = utf8CheckByte(buf[j]);
   if (nb >= 0) {
     if (nb > 0) self.lastNeed = nb - 2;
     return nb;
   }
-  if (--j < i) return 0;
+  if (--j < i || nb === -2) return 0;
   nb = utf8CheckByte(buf[j]);
   if (nb >= 0) {
     if (nb > 0) {
@@ -3198,7 +3330,7 @@ function utf8CheckIncomplete(self, buf, i) {
 // Validates as many continuation bytes for a multi-byte UTF-8 character as
 // needed or are available. If we see a non-continuation byte where we expect
 // one, we "replace" the validated continuation bytes we've seen so far with
-// UTF-8 replacement characters ('\ufffd'), to match v8's UTF-8 decoding
+// a single UTF-8 replacement character ('\ufffd'), to match v8's UTF-8 decoding
 // behavior. The continuation byte check is included three times in the case
 // where all of the continuation bytes for a character exist in the same buffer.
 // It is also done this way as a slight performance increase instead of using a
@@ -3206,17 +3338,17 @@ function utf8CheckIncomplete(self, buf, i) {
 function utf8CheckExtraBytes(self, buf, p) {
   if ((buf[0] & 0xC0) !== 0x80) {
     self.lastNeed = 0;
-    return '\ufffd'.repeat(p);
+    return '\ufffd';
   }
   if (self.lastNeed > 1 && buf.length > 1) {
     if ((buf[1] & 0xC0) !== 0x80) {
       self.lastNeed = 1;
-      return '\ufffd'.repeat(p + 1);
+      return '\ufffd';
     }
     if (self.lastNeed > 2 && buf.length > 2) {
       if ((buf[2] & 0xC0) !== 0x80) {
         self.lastNeed = 2;
-        return '\ufffd'.repeat(p + 2);
+        return '\ufffd';
       }
     }
   }
@@ -3247,11 +3379,11 @@ function utf8Text(buf, i) {
   return buf.toString('utf8', i, end);
 }
 
-// For UTF-8, a replacement character for each buffered byte of a (partial)
-// character needs to be added to the output.
+// For UTF-8, a replacement character is added when ending on a partial
+// character.
 function utf8End(buf) {
   var r = buf && buf.length ? this.write(buf) : '';
-  if (this.lastNeed) return r + '\ufffd'.repeat(this.lastTotal - this.lastNeed);
+  if (this.lastNeed) return r + '\ufffd';
   return r;
 }
 
@@ -3405,7 +3537,7 @@ module.exports = shift
 function shift (stream) {
   var rs = stream._readableState
   if (!rs) return null
-  return rs.objectMode ? stream.read() : stream.read(getStateLength(rs))
+  return (rs.objectMode || typeof stream._duplexState === 'number') ? stream.read() : stream.read(getStateLength(rs))
 }
 
 function getStateLength (state) {
@@ -3454,7 +3586,7 @@ function serialize (opts) {
   })
 }
 
-},{"json-stringify-safe":26,"os":96,"split2":27,"through2":45}],26:[function(require,module,exports){
+},{"json-stringify-safe":26,"os":95,"split2":27,"through2":44}],26:[function(require,module,exports){
 exports = module.exports = stringify
 exports.getSerialize = serializer
 
@@ -3581,6 +3713,11 @@ function split (matcher, mapper, options) {
   // this stream is in objectMode only in the readable part
   stream._readableState.objectMode = true
 
+  // objectMode default hwm is 16 and not 16384
+  if (stream._readableState.highWaterMark && !options.highWaterMark) {
+    stream._readableState.highWaterMark = 16
+  }
+
   stream._last = ''
   stream._decoder = new StringDecoder('utf8')
   stream.matcher = matcher
@@ -3592,23 +3729,23 @@ function split (matcher, mapper, options) {
 
 module.exports = split
 
-},{"string_decoder":114,"through2":45}],28:[function(require,module,exports){
+},{"string_decoder":113,"through2":44}],28:[function(require,module,exports){
 arguments[4][9][0].apply(exports,arguments)
-},{"./_stream_readable":30,"./_stream_writable":32,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js":9,"core-util-is":36,"inherits":37,"process-nextick-args":39}],29:[function(require,module,exports){
+},{"./_stream_readable":30,"./_stream_writable":32,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js":9,"core-util-is":36,"inherits":37,"process-nextick-args":39}],29:[function(require,module,exports){
 arguments[4][10][0].apply(exports,arguments)
-},{"./_stream_transform":31,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_passthrough.js":10,"core-util-is":36,"inherits":37}],30:[function(require,module,exports){
+},{"./_stream_transform":31,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_passthrough.js":10,"core-util-is":36,"inherits":37}],30:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"./_stream_duplex":28,"./internal/streams/BufferList":33,"./internal/streams/destroy":34,"./internal/streams/stream":35,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js":11,"_process":97,"core-util-is":36,"events":92,"inherits":37,"isarray":38,"process-nextick-args":39,"safe-buffer":40,"string_decoder/":41,"util":87}],31:[function(require,module,exports){
+},{"./_stream_duplex":28,"./internal/streams/BufferList":33,"./internal/streams/destroy":34,"./internal/streams/stream":35,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js":11,"_process":96,"core-util-is":36,"events":91,"inherits":37,"isarray":38,"process-nextick-args":39,"safe-buffer":40,"string_decoder/":41,"util":86}],31:[function(require,module,exports){
 arguments[4][12][0].apply(exports,arguments)
-},{"./_stream_duplex":28,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js":12,"core-util-is":36,"inherits":37}],32:[function(require,module,exports){
+},{"./_stream_duplex":28,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js":12,"core-util-is":36,"inherits":37}],32:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
-},{"./_stream_duplex":28,"./internal/streams/destroy":34,"./internal/streams/stream":35,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js":13,"_process":97,"core-util-is":36,"inherits":37,"process-nextick-args":39,"safe-buffer":40,"util-deprecate":42}],33:[function(require,module,exports){
+},{"./_stream_duplex":28,"./internal/streams/destroy":34,"./internal/streams/stream":35,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js":13,"_process":96,"core-util-is":36,"inherits":37,"process-nextick-args":39,"safe-buffer":40,"util-deprecate":42}],33:[function(require,module,exports){
 module.exports=require(14)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/BufferList.js":14,"safe-buffer":40}],34:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/BufferList.js":14,"safe-buffer":40,"util":86}],34:[function(require,module,exports){
 module.exports=require(15)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js":15,"process-nextick-args":39}],35:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js":15,"process-nextick-args":39}],35:[function(require,module,exports){
 module.exports=require(16)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js":16,"events":92}],36:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js":16,"events":91}],36:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3719,26 +3856,23 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":94}],37:[function(require,module,exports){
+},{"../../../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":93}],37:[function(require,module,exports){
 module.exports=require(8)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],38:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],38:[function(require,module,exports){
 module.exports=require(18)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/isarray/index.js":18}],39:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/isarray/index.js":18}],39:[function(require,module,exports){
 module.exports=require(19)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/process-nextick-args/index.js":19,"_process":97}],40:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/process-nextick-args/index.js":19,"_process":96}],40:[function(require,module,exports){
 module.exports=require(20)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/safe-buffer/index.js":20,"buffer":88}],41:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/safe-buffer/index.js":20,"buffer":87}],41:[function(require,module,exports){
 module.exports=require(21)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/string_decoder/lib/string_decoder.js":21,"safe-buffer":40}],42:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/string_decoder/lib/string_decoder.js":21,"safe-buffer":40}],42:[function(require,module,exports){
 module.exports=require(22)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/util-deprecate/browser.js":22}],43:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/util-deprecate/browser.js":22}],43:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
-},{"./lib/_stream_duplex.js":28,"./lib/_stream_passthrough.js":29,"./lib/_stream_readable.js":30,"./lib/_stream_transform.js":31,"./lib/_stream_writable.js":32,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/readable-browser.js":23}],44:[function(require,module,exports){
-module.exports = require('./readable').Transform
-
-},{"./readable":43}],45:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":28,"./lib/_stream_passthrough.js":29,"./lib/_stream_readable.js":30,"./lib/_stream_transform.js":31,"./lib/_stream_writable.js":32,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/readable-browser.js":23}],44:[function(require,module,exports){
 (function (process){
-var Transform = require('readable-stream/transform')
+var Transform = require('readable-stream').Transform
   , inherits  = require('util').inherits
   , xtend     = require('xtend')
 
@@ -3836,7 +3970,7 @@ module.exports.obj = through2(function (options, transform, flush) {
 })
 
 }).call(this,require('_process'))
-},{"_process":97,"readable-stream/transform":44,"util":118,"xtend":46}],46:[function(require,module,exports){
+},{"_process":96,"readable-stream":43,"util":117,"xtend":45}],45:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -3857,11 +3991,11 @@ function extend() {
     return target
 }
 
-},{}],47:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 
 
 module.exports = ".docker-browser-console .terminal-cursor {\n  background-color: #ccc;\n}\n\n.docker-browser-console {\n  font-family: monospace;\n  background-color: black;\n}"
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /*! rainbow-load 0.0.5, 2013-08-22
  *  https://github.com/buunguyen/rainbow.js
  *  Copyright (c) 2013 Buu Nguyen
@@ -4002,10 +4136,10 @@ module.exports = ".docker-browser-console .terminal-cursor {\n  background-color
     }
 }).call(this, window, document)
 
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = require('./lib/index.js');
 
-},{"./lib/index.js":50}],50:[function(require,module,exports){
+},{"./lib/index.js":49}],49:[function(require,module,exports){
 (function (Buffer,__dirname){
 /**
  * term.js - an xterm emulator
@@ -4064,7 +4198,7 @@ term.__defineGetter__('Terminal', function() {
 module.exports = term;
 
 }).call(this,require("buffer").Buffer,"/node_modules/adventure-time/node_modules/term.js/lib")
-},{"../src/term":51,"buffer":88,"fs":86,"url":115}],51:[function(require,module,exports){
+},{"../src/term":50,"buffer":87,"fs":85,"url":114}],50:[function(require,module,exports){
 (function (global){
 /**
  * term.js - an xterm emulator
@@ -9843,49 +9977,49 @@ if (typeof module !== 'undefined') {
 }());
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],52:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports=require(4)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/index.js":4,"_process":97,"buffer":88,"end-of-stream":53,"inherits":72,"readable-stream":70,"stream-shift":71}],53:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/index.js":4,"_process":96,"buffer":87,"end-of-stream":52,"inherits":71,"readable-stream":69,"stream-shift":70}],52:[function(require,module,exports){
 module.exports=require(5)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/index.js":5,"once":55}],54:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/index.js":5,"_process":96,"once":54}],53:[function(require,module,exports){
 module.exports=require(6)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/node_modules/once/node_modules/wrappy/wrappy.js":6}],55:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/node_modules/once/node_modules/wrappy/wrappy.js":6}],54:[function(require,module,exports){
 module.exports=require(7)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/node_modules/once/once.js":7,"wrappy":54}],56:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/end-of-stream/node_modules/once/once.js":7,"wrappy":53}],55:[function(require,module,exports){
 module.exports=require(9)
-},{"./_stream_readable":58,"./_stream_writable":60,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js":9,"core-util-is":64,"inherits":72,"process-nextick-args":66}],57:[function(require,module,exports){
+},{"./_stream_readable":57,"./_stream_writable":59,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js":9,"core-util-is":63,"inherits":71,"process-nextick-args":65}],56:[function(require,module,exports){
 module.exports=require(10)
-},{"./_stream_transform":59,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_passthrough.js":10,"core-util-is":64,"inherits":72}],58:[function(require,module,exports){
+},{"./_stream_transform":58,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_passthrough.js":10,"core-util-is":63,"inherits":71}],57:[function(require,module,exports){
 module.exports=require(11)
-},{"./_stream_duplex":56,"./internal/streams/BufferList":61,"./internal/streams/destroy":62,"./internal/streams/stream":63,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js":11,"_process":97,"core-util-is":64,"events":92,"inherits":72,"isarray":65,"process-nextick-args":66,"safe-buffer":67,"string_decoder/":68,"util":87}],59:[function(require,module,exports){
+},{"./_stream_duplex":55,"./internal/streams/BufferList":60,"./internal/streams/destroy":61,"./internal/streams/stream":62,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js":11,"_process":96,"core-util-is":63,"events":91,"inherits":71,"isarray":64,"process-nextick-args":65,"safe-buffer":66,"string_decoder/":67,"util":86}],58:[function(require,module,exports){
 module.exports=require(12)
-},{"./_stream_duplex":56,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js":12,"core-util-is":64,"inherits":72}],60:[function(require,module,exports){
+},{"./_stream_duplex":55,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js":12,"core-util-is":63,"inherits":71}],59:[function(require,module,exports){
 module.exports=require(13)
-},{"./_stream_duplex":56,"./internal/streams/destroy":62,"./internal/streams/stream":63,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js":13,"_process":97,"core-util-is":64,"inherits":72,"process-nextick-args":66,"safe-buffer":67,"util-deprecate":69}],61:[function(require,module,exports){
+},{"./_stream_duplex":55,"./internal/streams/destroy":61,"./internal/streams/stream":62,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js":13,"_process":96,"core-util-is":63,"inherits":71,"process-nextick-args":65,"safe-buffer":66,"util-deprecate":68}],60:[function(require,module,exports){
 module.exports=require(14)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/BufferList.js":14,"safe-buffer":67}],62:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/BufferList.js":14,"safe-buffer":66,"util":86}],61:[function(require,module,exports){
 module.exports=require(15)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js":15,"process-nextick-args":66}],63:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js":15,"process-nextick-args":65}],62:[function(require,module,exports){
 module.exports=require(16)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js":16,"events":92}],64:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js":16,"events":91}],63:[function(require,module,exports){
 module.exports=require(17)
-},{"../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":94,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/core-util-is/lib/util.js":17}],65:[function(require,module,exports){
+},{"../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":93,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/core-util-is/lib/util.js":17}],64:[function(require,module,exports){
 module.exports=require(18)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/isarray/index.js":18}],66:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/isarray/index.js":18}],65:[function(require,module,exports){
 module.exports=require(19)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/process-nextick-args/index.js":19,"_process":97}],67:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/process-nextick-args/index.js":19,"_process":96}],66:[function(require,module,exports){
 module.exports=require(20)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/safe-buffer/index.js":20,"buffer":88}],68:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/safe-buffer/index.js":20,"buffer":87}],67:[function(require,module,exports){
 module.exports=require(21)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/string_decoder/lib/string_decoder.js":21,"safe-buffer":67}],69:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/string_decoder/lib/string_decoder.js":21,"safe-buffer":66}],68:[function(require,module,exports){
 module.exports=require(22)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/util-deprecate/browser.js":22}],70:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/util-deprecate/browser.js":22}],69:[function(require,module,exports){
 module.exports=require(23)
-},{"./lib/_stream_duplex.js":56,"./lib/_stream_passthrough.js":57,"./lib/_stream_readable.js":58,"./lib/_stream_transform.js":59,"./lib/_stream_writable.js":60,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/readable-browser.js":23}],71:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":55,"./lib/_stream_passthrough.js":56,"./lib/_stream_readable.js":57,"./lib/_stream_transform.js":58,"./lib/_stream_writable.js":59,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/readable-browser.js":23}],70:[function(require,module,exports){
 module.exports=require(24)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/stream-shift/index.js":24}],72:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/stream-shift/index.js":24}],71:[function(require,module,exports){
 module.exports=require(8)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],73:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],72:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -9978,7 +10112,7 @@ function forEach (xs, f) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_readable":74,"./_stream_writable":76,"_process":97,"core-util-is":77,"inherits":72}],74:[function(require,module,exports){
+},{"./_stream_readable":73,"./_stream_writable":75,"_process":96,"core-util-is":76,"inherits":71}],73:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -10964,7 +11098,7 @@ function indexOf (xs, x) {
 }
 
 }).call(this,require('_process'))
-},{"_process":97,"buffer":88,"core-util-is":77,"events":92,"inherits":72,"isarray":78,"stream":113,"string_decoder/":79}],75:[function(require,module,exports){
+},{"_process":96,"buffer":87,"core-util-is":76,"events":91,"inherits":71,"isarray":77,"stream":112,"string_decoder/":78}],74:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -11176,7 +11310,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./_stream_duplex":73,"core-util-is":77,"inherits":72}],76:[function(require,module,exports){
+},{"./_stream_duplex":72,"core-util-is":76,"inherits":71}],75:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -11566,14 +11700,14 @@ function endWritable(stream, state, cb) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_duplex":73,"_process":97,"buffer":88,"core-util-is":77,"inherits":72,"stream":113}],77:[function(require,module,exports){
+},{"./_stream_duplex":72,"_process":96,"buffer":87,"core-util-is":76,"inherits":71,"stream":112}],76:[function(require,module,exports){
 module.exports=require(17)
-},{"../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":94,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/core-util-is/lib/util.js":17}],78:[function(require,module,exports){
+},{"../../../../../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":93,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/readable-stream/node_modules/core-util-is/lib/util.js":17}],77:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],79:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -11796,12 +11930,110 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":88}],80:[function(require,module,exports){
+},{"buffer":87}],79:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":75}],81:[function(require,module,exports){
-arguments[4][45][0].apply(exports,arguments)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/ndjson/node_modules/through2/through2.js":45,"_process":97,"readable-stream/transform":80,"util":118,"xtend":83}],82:[function(require,module,exports){
+},{"./lib/_stream_transform.js":74}],80:[function(require,module,exports){
+(function (process){
+var Transform = require('readable-stream/transform')
+  , inherits  = require('util').inherits
+  , xtend     = require('xtend')
+
+function DestroyableTransform(opts) {
+  Transform.call(this, opts)
+  this._destroyed = false
+}
+
+inherits(DestroyableTransform, Transform)
+
+DestroyableTransform.prototype.destroy = function(err) {
+  if (this._destroyed) return
+  this._destroyed = true
+  
+  var self = this
+  process.nextTick(function() {
+    if (err)
+      self.emit('error', err)
+    self.emit('close')
+  })
+}
+
+// a noop _transform function
+function noop (chunk, enc, callback) {
+  callback(null, chunk)
+}
+
+
+// create a new export function, used by both the main export and
+// the .ctor export, contains common logic for dealing with arguments
+function through2 (construct) {
+  return function (options, transform, flush) {
+    if (typeof options == 'function') {
+      flush     = transform
+      transform = options
+      options   = {}
+    }
+
+    if (typeof transform != 'function')
+      transform = noop
+
+    if (typeof flush != 'function')
+      flush = null
+
+    return construct(options, transform, flush)
+  }
+}
+
+
+// main export, just make me a transform stream!
+module.exports = through2(function (options, transform, flush) {
+  var t2 = new DestroyableTransform(options)
+
+  t2._transform = transform
+
+  if (flush)
+    t2._flush = flush
+
+  return t2
+})
+
+
+// make me a reusable prototype that I can `new`, or implicitly `new`
+// with a constructor call
+module.exports.ctor = through2(function (options, transform, flush) {
+  function Through2 (override) {
+    if (!(this instanceof Through2))
+      return new Through2(override)
+
+    this.options = xtend(options, override)
+
+    DestroyableTransform.call(this, this.options)
+  }
+
+  inherits(Through2, DestroyableTransform)
+
+  Through2.prototype._transform = transform
+
+  if (flush)
+    Through2.prototype._flush = flush
+
+  return Through2
+})
+
+
+module.exports.obj = through2(function (options, transform, flush) {
+  var t2 = new DestroyableTransform(xtend({ objectMode: true, highWaterMark: 16 }, options))
+
+  t2._transform = transform
+
+  if (flush)
+    t2._flush = flush
+
+  return t2
+})
+
+}).call(this,require('_process'))
+},{"_process":96,"readable-stream/transform":79,"util":117,"xtend":82}],81:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11846,9 +12078,9 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
-},{}],83:[function(require,module,exports){
-module.exports=require(46)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/xtend/immutable.js":46}],84:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
+module.exports=require(45)
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/xtend/immutable.js":45}],83:[function(require,module,exports){
 (function (process,Buffer){
 var through = require('through2')
 var duplexify = require('duplexify')
@@ -11934,7 +12166,7 @@ function WebSocketStream(target, protocols) {
 }
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":97,"buffer":88,"duplexify":52,"through2":81,"ws":82}],85:[function(require,module,exports){
+},{"_process":96,"buffer":87,"duplexify":51,"through2":80,"ws":81}],84:[function(require,module,exports){
 var url = require('url')
 var docker = require('docker-browser-console')
 var websocket = require('websocket-stream')
@@ -11987,15 +12219,15 @@ module.exports = function(parentDiv) {
   }
 }
 
-},{"docker-browser-console":1,"rainbow-load":48,"term.js":49,"url":115,"websocket-stream":84}],86:[function(require,module,exports){
+},{"docker-browser-console":1,"rainbow-load":47,"term.js":48,"url":114,"websocket-stream":83}],85:[function(require,module,exports){
 
-},{}],87:[function(require,module,exports){
-module.exports=require(86)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/browserify/lib/_empty.js":86}],88:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
+module.exports=require(85)
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/browserify/lib/_empty.js":85}],87:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
- * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @author   Feross Aboukhadijeh <http://feross.org>
  * @license  MIT
  */
 
@@ -13045,7 +13277,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{"base64-js":89,"ieee754":90,"is-array":91}],89:[function(require,module,exports){
+},{"base64-js":88,"ieee754":89,"is-array":90}],88:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -13167,10 +13399,10 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],90:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
-  var eLen = nBytes * 8 - mLen - 1
+  var eLen = (nBytes * 8) - mLen - 1
   var eMax = (1 << eLen) - 1
   var eBias = eMax >> 1
   var nBits = -7
@@ -13183,12 +13415,12 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   e = s & ((1 << (-nBits)) - 1)
   s >>= (-nBits)
   nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
 
   m = e & ((1 << (-nBits)) - 1)
   e >>= (-nBits)
   nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
 
   if (e === 0) {
     e = 1 - eBias
@@ -13203,7 +13435,7 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
 
 exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
+  var eLen = (nBytes * 8) - mLen - 1
   var eMax = (1 << eLen) - 1
   var eBias = eMax >> 1
   var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
@@ -13236,7 +13468,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
       m = 0
       e = eMax
     } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
+      m = ((value * c) - 1) * Math.pow(2, mLen)
       e = e + eBias
     } else {
       m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
@@ -13253,7 +13485,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],91:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 
 /**
  * isArray
@@ -13288,7 +13520,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],92:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -13591,13 +13823,13 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],93:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 module.exports=require(8)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],94:[function(require,module,exports){
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],93:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
- * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @author   Feross Aboukhadijeh <https://feross.org>
  * @license  MIT
  */
 
@@ -13616,9 +13848,9 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],95:[function(require,module,exports){
-module.exports=require(78)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/node_modules/isarray/index.js":78}],96:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
+module.exports=require(77)
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/node_modules/isarray/index.js":77}],95:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -13665,7 +13897,7 @@ exports.tmpdir = exports.tmpDir = function () {
 
 exports.EOL = '\n';
 
-},{}],97:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -13753,7 +13985,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],98:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -14264,7 +14496,7 @@ process.chdir = function (dir) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],99:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14350,7 +14582,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],100:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14437,18 +14669,18 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],101:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":99,"./encode":100}],102:[function(require,module,exports){
+},{"./decode":98,"./encode":99}],101:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":103}],103:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"./_stream_readable":105,"./_stream_writable":107,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/lib/_stream_duplex.js":73,"_process":97,"core-util-is":108,"inherits":93}],104:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":102}],102:[function(require,module,exports){
+arguments[4][72][0].apply(exports,arguments)
+},{"./_stream_readable":104,"./_stream_writable":106,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/lib/_stream_duplex.js":72,"_process":96,"core-util-is":107,"inherits":92}],103:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14496,7 +14728,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./_stream_transform":106,"core-util-is":108,"inherits":93}],105:[function(require,module,exports){
+},{"./_stream_transform":105,"core-util-is":107,"inherits":92}],104:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -15451,7 +15683,7 @@ function indexOf (xs, x) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_duplex":103,"_process":97,"buffer":88,"core-util-is":108,"events":92,"inherits":93,"isarray":95,"stream":113,"string_decoder/":114,"util":87}],106:[function(require,module,exports){
+},{"./_stream_duplex":102,"_process":96,"buffer":87,"core-util-is":107,"events":91,"inherits":92,"isarray":94,"stream":112,"string_decoder/":113,"util":86}],105:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15662,7 +15894,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./_stream_duplex":103,"core-util-is":108,"inherits":93}],107:[function(require,module,exports){
+},{"./_stream_duplex":102,"core-util-is":107,"inherits":92}],106:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16143,7 +16375,7 @@ function endWritable(stream, state, cb) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_duplex":103,"_process":97,"buffer":88,"core-util-is":108,"inherits":93,"stream":113}],108:[function(require,module,exports){
+},{"./_stream_duplex":102,"_process":96,"buffer":87,"core-util-is":107,"inherits":92,"stream":112}],107:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16254,10 +16486,10 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../../../insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../insert-module-globals/node_modules/is-buffer/index.js":94}],109:[function(require,module,exports){
+},{"../../../../insert-module-globals/node_modules/is-buffer/index.js":93}],108:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":104}],110:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":103}],109:[function(require,module,exports){
 (function (process){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = require('stream');
@@ -16271,12 +16503,12 @@ if (!process.browser && process.env.READABLE_STREAM === 'disable') {
 }
 
 }).call(this,require('_process'))
-},{"./lib/_stream_duplex.js":103,"./lib/_stream_passthrough.js":104,"./lib/_stream_readable.js":105,"./lib/_stream_transform.js":106,"./lib/_stream_writable.js":107,"_process":97,"stream":113}],111:[function(require,module,exports){
-arguments[4][80][0].apply(exports,arguments)
-},{"./lib/_stream_transform.js":106,"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/transform.js":80}],112:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":102,"./lib/_stream_passthrough.js":103,"./lib/_stream_readable.js":104,"./lib/_stream_transform.js":105,"./lib/_stream_writable.js":106,"_process":96,"stream":112}],110:[function(require,module,exports){
+arguments[4][79][0].apply(exports,arguments)
+},{"./lib/_stream_transform.js":105,"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/transform.js":79}],111:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":107}],113:[function(require,module,exports){
+},{"./lib/_stream_writable.js":106}],112:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -16405,9 +16637,9 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":92,"inherits":93,"readable-stream/duplex.js":102,"readable-stream/passthrough.js":109,"readable-stream/readable.js":110,"readable-stream/transform.js":111,"readable-stream/writable.js":112}],114:[function(require,module,exports){
-module.exports=require(79)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/node_modules/string_decoder/index.js":79,"buffer":88}],115:[function(require,module,exports){
+},{"events":91,"inherits":92,"readable-stream/duplex.js":101,"readable-stream/passthrough.js":108,"readable-stream/readable.js":109,"readable-stream/transform.js":110,"readable-stream/writable.js":111}],113:[function(require,module,exports){
+module.exports=require(78)
+},{"/Users/iracooke/Dropbox/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/websocket-stream/node_modules/through2/node_modules/readable-stream/node_modules/string_decoder/index.js":78,"buffer":87}],114:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -17116,16 +17348,39 @@ function isNullOrUndefined(arg) {
   return  arg == null;
 }
 
-},{"punycode":98,"querystring":101}],116:[function(require,module,exports){
-module.exports=require(8)
-},{"/Volumes/Orange/icooke/Sources/BC2023/lessons/node_modules/adventure-time/node_modules/docker-browser-console/node_modules/duplexify/node_modules/inherits/inherits_browser.js":8}],117:[function(require,module,exports){
+},{"punycode":97,"querystring":100}],115:[function(require,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+},{}],116:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],118:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -17715,8 +17970,8 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":117,"_process":97,"inherits":116}],119:[function(require,module,exports){
+},{"./support/isBuffer":116,"_process":96,"inherits":115}],118:[function(require,module,exports){
 var terminal = require('adventure-time/terminal')
 terminal()
 
-},{"adventure-time/terminal":85}]},{},[119]);
+},{"adventure-time/terminal":84}]},{},[118]);

@@ -20,13 +20,16 @@
 <pre><code class="lang-bash">learner@:learning_unix$ echo &quot;Bilbo&quot; &gt; hobbits.txt
 </code></pre>
 <p>Notice that when you ran the command above it didn&#39;t print any output to the screen.  All of the output was captured and printed into a file called <code>hobbits.txt</code>.</p>
-<p>You should now see <code>hobbits.txt</code> appear in your file browser.  Click on it and the contents should appear in the editor.</p>
-<p>Now try adding another name to the file.</p>
+<p>You can view the first few entries in this file using the <code>head</code> command like this</p>
+<pre><code class="lang-bash">learner@:learning_unix$ head hobbits.txt
+</code></pre>
 <pre><code class="lang-bash">learner@:learning_unix$ echo &quot;Merry&quot; &gt;&gt; hobbits.txt
 </code></pre>
 <p>Notice that we use <code>&gt;&gt;</code> and not just <code>&gt;</code>. This operator will <strong>append</strong> to a file. If we only used <code>&gt;</code>, we would end up overwriting the file. </p>
 <blockquote>
-<p><em>*</em> If you want to see the change you made to the file above in the editor you will need to click its name again in the file browser to refresh the editor.</p>
+<p>*** If you want to see the change you made to the file above in the editor you will need to click its name again in the file browser to refresh the editor.</p>
+</blockquote>
+<blockquote>
 <p><strong><em>Careful when using file redirection (&gt;), it will overwrite any existing file of the same name</em></strong></p>
 </blockquote>
 
