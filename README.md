@@ -22,8 +22,8 @@ Each workshop consists of an online tutorial and set of exercises. In order to g
 
 To access the assignments;
 
-1. Use a web browser (eg Chrome, Safari, Firefox) to navigate [https://nb.bioinformatics.guide](https://nb.bioinformatics.guide)
-2. Login using your jc number.  The password will not be your usual JCU password and will be provided to you via email.  See me if you did not get a password or if your login fails.
+1. Use a web browser (eg Chrome, Safari, Firefox) to navigate [http://bc2023-nb.jcu.edu.au/](http://bc2023-nb.jcu.edu.au/)
+2. Login using the username provided you in an email. This will be your jc number followed by the letters nb.  The password will not be your usual JCU password and will be provided to you via email.  See me if you did not get a password or if your login fails.
 3. Click the `Assignments` tab (see screenshot below) to show a list of available assignments
 4. Click `Fetch` to download the relevant assignment.
 
