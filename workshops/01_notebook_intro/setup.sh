@@ -1,16 +1,7 @@
 NOTEBOOK_HOME="${NOTEBOOK_HOME:-`pwd`}"
 export NOTEBOOK_HOME
 
-export PATH=${PATH}:/usr/games
-
-rm -rf ${NOTEBOOK_HOME}/E2
-mkdir E2
-echo "1" > E2/5_H.txt
-echo "11" > E2/2_E.txt
-echo "111" > E2/3_L.txt
-echo "1111" > E2/4_L.txt
-echo "11111" > E2/1_O.txt
-echo "1111" > E2/1_O.csv
+export PATH=${PATH}:/usr/games:.
 
 display_answer(){
 	test_answer=$1
@@ -63,15 +54,19 @@ test_e2(){
 }
 
 test_e3(){
-    test_answer 3 "$(ls E2)"
+    test_answer 3 "$(ls -Sr)"
 }
 
 test_e4(){
-    test_answer 4 "$(ls -1 -Sr E2)"
+    test_answer 4 "$(pwd)"    
 }
 
 test_e5(){
-    test_answer 5 "$(ls -1 -Sr E2/*.txt)"
- }
+    test_answer 5 "$(extinction.py -s TGCATA)"
+}
+
+test_e6(){
+    test_answer 6 "$(extinction.py TGCATATGCTATTT)"
+}
 
 echo "Setup Done"
