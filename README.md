@@ -25,7 +25,7 @@ Each workshop consists of a set of exercises that you can complete online. In or
 To access the assignments;
 
 1. Use a web browser (eg Chrome, Safari, Firefox) to navigate [http://bc2023-nb.jcu.edu.au/](http://bc2023-nb.jcu.edu.au/)
-2. Login using the username provided you in an email. This will be your jc number followed by the letters nb.  The password will not be your usual JCU password and will be provided to you via email.  See me if you did not get a password or if your login fails.
+2. Login using your usual JCU username and password
 3. Click the `Assignments` tab (see screenshot below) to show a list of available assignments
 4. Click `Fetch` to download the relevant assignment.
 
